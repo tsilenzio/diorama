@@ -581,7 +581,7 @@ fn docker_panel() -> Panel {
         s("docker ps --format table", BRIGHT_WHITE),
     ]));
     lines.push(blank());
-    // header
+    // Header
     lines.push(Line::from(vec![
         colb("CONTAINER ID", 14, BRIGHT_WHITE),
         colb("IMAGE", 22, BRIGHT_WHITE),
@@ -589,7 +589,7 @@ fn docker_panel() -> Panel {
         colb("PORTS", 22, BRIGHT_WHITE),
         colb("NAMES", 14, BRIGHT_WHITE),
     ]));
-    // rows
+    // Rows
     lines.push(Line::from(vec![
         col("a1b2c3d4e5f6", 14, BRIGHT_BLACK),
         col("nginx:latest", 22, CYAN),
