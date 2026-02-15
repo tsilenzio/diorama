@@ -22,7 +22,7 @@ fn main() -> Result<()> {
     io::stdout().execute(EnterAlternateScreen)?;
     let mut terminal = Terminal::new(CrosstermBackend::new(io::stdout()))?;
 
-    let mut app = App::new();
+    let mut app = App::new()?;
 
     loop {
         terminal.draw(|f| ui::draw(f, &app))?;

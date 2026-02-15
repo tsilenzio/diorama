@@ -1,3 +1,4 @@
+use color_eyre::Result;
 use crossterm::event::{KeyCode, KeyEvent, KeyModifiers};
 
 use crate::panels::{self, Panel};
@@ -21,18 +22,18 @@ pub struct App {
 }
 
 impl App {
-    pub fn new() -> Self {
-        let tools = scaffold::setup();
+    pub fn new() -> Result<Self> {
+        let (_scaffold, tools) = scaffold::setup()?;
         let panels = panels::build_all(&tools);
 
-        Self {
+        Ok(Self {
             mode: ViewMode::Grid,
             panels,
             selected: 0,
             scroll_offset: 0,
             fullscreen_scroll: 0,
             tools,
-        }
+        })
     }
 
     pub fn handle_key(&mut self, key: KeyEvent) -> bool {
