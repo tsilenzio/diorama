@@ -4,75 +4,127 @@ use ratatui::text::Line;
 use super::*;
 
 pub(super) fn docker_panel() -> Panel {
-    let mut lines = Vec::new();
+    // Column widths: id=15, image=30, command=22, status=18, ports=26, name=rest
+    const DI: usize = 15;
+    const DM: usize = 30;
+    const DC: usize = 22;
+    const DS: usize = 18;
+    const DP: usize = 26;
 
-    lines.push(Line::from(vec![
-        s("$ ", WHITE),
-        s("docker ps --format table", BRIGHT_WHITE),
-    ]));
-    lines.push(blank());
-    lines.push(Line::from(vec![
-        colb("CONTAINER ID", 14, BRIGHT_WHITE),
-        colb("IMAGE", 22, BRIGHT_WHITE),
-        colb("STATUS", 16, BRIGHT_WHITE),
-        colb("PORTS", 22, BRIGHT_WHITE),
-        colb("NAMES", 14, BRIGHT_WHITE),
-    ]));
-    lines.push(Line::from(vec![
-        col("a1b2c3d4e5f6", 14, BRIGHT_BLACK),
-        col("nginx:latest", 22, CYAN),
-        col("Up 3 days", 16, GREEN),
-        col("0.0.0.0:80->80/tcp", 22, WHITE),
-        col("web-proxy", 14, BRIGHT_WHITE),
-    ]));
-    lines.push(Line::from(vec![
-        col("f6e5d4c3b2a1", 14, BRIGHT_BLACK),
-        col("postgres:16", 22, CYAN),
-        col("Up 3 days", 16, GREEN),
-        col("5432/tcp", 22, WHITE),
-        col("db", 14, BRIGHT_WHITE),
-    ]));
-    lines.push(Line::from(vec![
-        col("1a2b3c4d5e6f", 14, BRIGHT_BLACK),
-        col("redis:7-alpine", 22, CYAN),
-        col("Up 3 days", 16, GREEN),
-        col("6379/tcp", 22, WHITE),
-        col("cache", 14, BRIGHT_WHITE),
-    ]));
-    lines.push(Line::from(vec![
-        col("6f5e4d3c2b1a", 14, BRIGHT_BLACK),
-        col("my-app:latest", 22, CYAN),
-        sfgbg(" Restarting ", BRIGHT_WHITE, RED),
-        col("", 5, WHITE),
-        col("8080/tcp", 22, WHITE),
-        col("api", 14, BRIGHT_WHITE),
-    ]));
-    lines.push(Line::from(vec![
-        col("b1c2d3e4f5a6", 14, BRIGHT_BLACK),
-        col("grafana/grafana", 22, CYAN),
-        col("Up 12 hours", 16, GREEN),
-        col("0.0.0.0:3000->3000", 22, WHITE),
-        col("monitoring", 14, BRIGHT_WHITE),
-    ]));
-    lines.push(blank());
-    lines.push(Line::from(vec![
-        sb("5", BRIGHT_GREEN),
-        s(" containers, ", WHITE),
-        sb("4", GREEN),
-        s(" running, ", WHITE),
-        sb("1", RED),
-        s(" restarting", WHITE),
-    ]));
+    let lines = vec![
+        Line::from(vec![
+            s("$ ", WHITE),
+            s("docker ps -a --format \"table {{.ID}}\\t{{.Image}}\\t{{.Command}}\\t{{.Status}}\\t{{.Ports}}\\t{{.Names}}\"", BRIGHT_WHITE),
+        ]),
+        blank(),
+        Line::from(vec![
+            colb("CONTAINER ID", DI, WHITE),
+            colb("IMAGE", DM, WHITE),
+            colb("COMMAND", DC, WHITE),
+            colb("STATUS", DS, WHITE),
+            colb("PORTS", DP, WHITE),
+            sb("NAMES", WHITE),
+        ]),
+        Line::from(vec![
+            col("a1b2c3d4e5f6", DI, BRIGHT_BLACK),
+            col("nginx:1.25-alpine", DM, CYAN),
+            cold("\"nginx -g 'daemon of…\"", DC, BRIGHT_BLACK),
+            colb("Up 2 hours", DS, GREEN),
+            col("0.0.0.0:80->80/tcp", DP, WHITE),
+            s("web-proxy", BRIGHT_WHITE),
+        ]),
+        Line::from(vec![
+            col("f6e5d4c3b2a1", DI, BRIGHT_BLACK),
+            col("postgres:16.2-bookworm", DM, CYAN),
+            cold("\"docker-entrypoint.s…\"", DC, BRIGHT_BLACK),
+            colb("Up 2 hours", DS, GREEN),
+            col("0.0.0.0:5432->5432/tcp", DP, WHITE),
+            s("app-db", BRIGHT_WHITE),
+        ]),
+        Line::from(vec![
+            col("1a2b3c4d5e6f", DI, BRIGHT_BLACK),
+            col("redis:7.2-alpine", DM, CYAN),
+            cold("\"docker-entrypoint.s…\"", DC, BRIGHT_BLACK),
+            colb("Up 2 hours", DS, GREEN),
+            col("0.0.0.0:6379->6379/tcp", DP, WHITE),
+            s("cache", BRIGHT_WHITE),
+        ]),
+        Line::from(vec![
+            col("6f5e4d3c2b1a", DI, BRIGHT_BLACK),
+            col("myapp/api-server:latest", DM, CYAN),
+            cold("\"node dist/server.js\"", DC, BRIGHT_BLACK),
+            colb("Up 45 minutes", DS, GREEN),
+            col("0.0.0.0:3000->3000/tcp", DP, WHITE),
+            s("api-server", BRIGHT_WHITE),
+        ]),
+        Line::from(vec![
+            col("c2d3e4f5a6b7", DI, BRIGHT_BLACK),
+            col("myapp/api-server:latest", DM, CYAN),
+            cold("\"node dist/server.js\"", DC, BRIGHT_BLACK),
+            colb("Up 45 minutes", DS, GREEN),
+            col("0.0.0.0:3001->3000/tcp", DP, WHITE),
+            s("api-server-2", BRIGHT_WHITE),
+        ]),
+        Line::from(vec![
+            col("b1a2c3d4e5f6", DI, BRIGHT_BLACK),
+            col("grafana/grafana:10.3.1", DM, CYAN),
+            cold("\"/run.sh\"", DC, BRIGHT_BLACK),
+            colb("Restarting (1) 5s", DS, YELLOW),
+            col("", DP, WHITE),
+            s("monitoring", BRIGHT_WHITE),
+        ]),
+        Line::from(vec![
+            col("e6f5d4c3b2a1", DI, BRIGHT_BLACK),
+            col("myapp/worker:latest", DM, CYAN),
+            cold("\"node dist/worker.js\"", DC, BRIGHT_BLACK),
+            colb("Exited (137) 20m", DS, RED),
+            col("", DP, WHITE),
+            s("worker-1", BRIGHT_WHITE),
+        ]),
+        Line::from(vec![
+            col("2b3c4d5e6f7a", DI, BRIGHT_BLACK),
+            col("rabbitmq:3.13-management", DM, CYAN),
+            cold("\"docker-entrypoint.s…\"", DC, BRIGHT_BLACK),
+            colb("Up 2 hours", DS, GREEN),
+            col("5672/tcp, 15672/tcp", DP, WHITE),
+            s("message-queue", BRIGHT_WHITE),
+        ]),
+        Line::from(vec![
+            col("7a6b5c4d3e2f", DI, BRIGHT_BLACK),
+            col("elasticsearch:8.12.0", DM, CYAN),
+            cold("\"/bin/tini -- /usr/l…\"", DC, BRIGHT_BLACK),
+            colb("Up 2 hours", DS, GREEN),
+            col("9200/tcp, 9300/tcp", DP, WHITE),
+            s("search", BRIGHT_WHITE),
+        ]),
+        Line::from(vec![
+            col("3e4f5a6b7c8d", DI, BRIGHT_BLACK),
+            col("prom/prometheus:v2.49", DM, CYAN),
+            cold("\"/bin/prometheus --c…\"", DC, BRIGHT_BLACK),
+            colb("Up 2 hours", DS, GREEN),
+            col("0.0.0.0:9090->9090/tcp", DP, WHITE),
+            s("prometheus", BRIGHT_WHITE),
+        ]),
+        Line::from(vec![
+            col("9d0e1f2a3b4c", DI, BRIGHT_BLACK),
+            col("mailhog/mailhog:latest", DM, CYAN),
+            cold("\"MailHog\"", DC, BRIGHT_BLACK),
+            colb("Created", DS, BRIGHT_BLACK),
+            col("", DP, WHITE),
+            s("mailhog", BRIGHT_WHITE),
+        ]),
+    ];
 
     Panel {
         title: "Docker".into(),
         icon: '\u{f308}',
-        border_color: BRIGHT_CYAN,
+        border_color: CYAN,
         content: lines,
     }
 }
 
 pub(super) fn file_listing_panel() -> Panel {
+    // Column widths: perms=12, size=6, user=7, group=7, date=14, status=2, icon+name=rest
     const FP: usize = 12;
     const FS: usize = 6;
     const FU: usize = 7;
@@ -131,6 +183,16 @@ pub(super) fn file_listing_panel() -> Panel {
             colr("-", FS, BRIGHT_BLACK),
             col("alice", FU, YELLOW),
             col("staff", FG, BRIGHT_BLACK),
+            col("20 Feb 16:45", FD, BLUE),
+            col("  ", FX, BRIGHT_BLACK),
+            sb("\u{f413} ", BLUE),
+            sb("docs/", BLUE),
+        ]),
+        Line::from(vec![
+            col("drwxr-xr-x", FP, BRIGHT_BLACK),
+            colr("-", FS, BRIGHT_BLACK),
+            col("alice", FU, YELLOW),
+            col("staff", FG, BRIGHT_BLACK),
             col("22 Feb 08:20", FD, BLUE),
             col("  ", FX, GREEN),
             sb("\u{f413} ", BLUE),
@@ -165,6 +227,36 @@ pub(super) fn file_listing_panel() -> Panel {
             cold("M ", FX, YELLOW),
             s("\u{e7a8} ", RED),
             s("src/main.rs", WHITE),
+        ]),
+        Line::from(vec![
+            col(".rw-r--r--", FP, BRIGHT_BLACK),
+            colr("1.5k", FS, GREEN),
+            col("alice", FU, YELLOW),
+            col("staff", FG, BRIGHT_BLACK),
+            col("22 Feb 11:20", FD, BLUE),
+            col("  ", FX, GREEN),
+            s("\u{e7a8} ", RED),
+            s("src/lib.rs", WHITE),
+        ]),
+        Line::from(vec![
+            col(".rw-r--r--", FP, BRIGHT_BLACK),
+            colr("2.8k", FS, GREEN),
+            col("alice", FU, YELLOW),
+            col("staff", FG, BRIGHT_BLACK),
+            col("23 Feb 14:30", FD, BLUE),
+            cold("M ", FX, YELLOW),
+            s("\u{e7a8} ", RED),
+            s("src/handler.rs", WHITE),
+        ]),
+        Line::from(vec![
+            col(".rw-r--r--", FP, BRIGHT_BLACK),
+            colr("1.2k", FS, GREEN),
+            col("alice", FU, YELLOW),
+            col("staff", FG, BRIGHT_BLACK),
+            col("22 Feb 11:20", FD, BLUE),
+            col("  ", FX, GREEN),
+            s("\u{e7a8} ", RED),
+            s("src/config.rs", WHITE),
         ]),
         Line::from(vec![
             col(".rw-r--r--", FP, BRIGHT_BLACK),
@@ -205,6 +297,26 @@ pub(super) fn file_listing_panel() -> Panel {
             col("  ", FX, GREEN),
             s("\u{f489} ", GREEN),
             s("run.sh", GREEN),
+        ]),
+        Line::from(vec![
+            col(".rw-------", FP, BRIGHT_BLACK),
+            colr("89", FS, GREEN),
+            col("alice", FU, YELLOW),
+            col("staff", FG, BRIGHT_BLACK),
+            col("19 Feb 12:00", FD, BLUE),
+            cold("I ", FX, BRIGHT_BLACK),
+            s("\u{f023} ", RED),
+            s(".env", BRIGHT_BLACK),
+        ]),
+        Line::from(vec![
+            col(".rw-r--r--", FP, BRIGHT_BLACK),
+            colr("1.8k", FS, GREEN),
+            col("alice", FU, YELLOW),
+            col("staff", FG, BRIGHT_BLACK),
+            col("20 Feb 10:30", FD, BLUE),
+            col("  ", FX, GREEN),
+            s("\u{f013} ", BRIGHT_BLACK),
+            s(".editorconfig", BRIGHT_BLACK),
         ]),
     ];
 
@@ -250,13 +362,23 @@ pub(super) fn system_info_panel() -> Panel {
         ]),
         Line::from(vec![
             sb("  :_______`-;     ", GREEN),
+            sb("Packages: ", BLUE),
+            s("247 (brew)", BRIGHT_BLACK),
+        ]),
+        Line::from(vec![
+            sb("   `._.-._.'      ", GREEN),
             sb("Shell:    ", BLUE),
             s("zsh 5.9 (with starship prompt)", WHITE),
         ]),
         Line::from(vec![
-            sb("   `._.-._.'      ", GREEN),
+            sb("                  ", GREEN),
             sb("Terminal: ", BLUE),
             s("Ghostty 1.1.0", WHITE),
+        ]),
+        Line::from(vec![
+            sb("                  ", GREEN),
+            sb("Font:     ", BLUE),
+            s("JetBrainsMono Nerd Font (14pt)", WHITE),
         ]),
         blank(),
         Line::from(vec![
@@ -277,6 +399,13 @@ pub(super) fn system_info_panel() -> Panel {
             s("36.0 GiB", WHITE),
             s(" (23%)", BRIGHT_BLACK),
             s(" ▮▮▮▮▮▯▯▯▯▯▯▯▯▯▯▯▯▯▯▯", GREEN),
+        ]),
+        Line::from(vec![
+            sb("Swap:     ", BLUE),
+            s("0 B", GREEN),
+            s(" / ", BRIGHT_BLACK),
+            s("8.0 GiB", WHITE),
+            s(" (0%)", BRIGHT_BLACK),
         ]),
         Line::from(vec![
             sb("Disk (/): ", BLUE),
@@ -343,6 +472,7 @@ pub(super) fn process_monitor_panel() -> Panel {
         ])
     }
 
+    // Column widths: pid=8, user=10, pri=5, ni=4, virt=8, res=8, shr=8, s=3, cpu=6, mem=6, time=11, cmd=rest
     const PP: usize = 8;
     const PU: usize = 10;
     const PC: usize = 7;
@@ -404,6 +534,14 @@ pub(super) fn process_monitor_panel() -> Panel {
             sb("postgres: writer process", GREEN),
         ]),
         Line::from(vec![
+            colr("893", PP, WHITE),
+            col("postgres", PU, YELLOW),
+            colr("12.3", PC, YELLOW),
+            colr("18.7", PM, YELLOW),
+            colr("6:32.91", PT, BRIGHT_BLACK),
+            sb("postgres: autovacuum launcher", GREEN),
+        ]),
+        Line::from(vec![
             colr("2341", PP, WHITE),
             col("alice", PU, YELLOW),
             colr("15.2", PC, YELLOW),
@@ -444,12 +582,28 @@ pub(super) fn process_monitor_panel() -> Panel {
             sb("nvim src/handler.rs", GREEN),
         ]),
         Line::from(vec![
+            colr("102", PP, WHITE),
+            col("root", PU, RED),
+            colr("1.4", PC, WHITE),
+            colr("0.8", PM, WHITE),
+            colr("3:42.10", PT, BRIGHT_BLACK),
+            sb("sshd: alice [priv]", GREEN),
+        ]),
+        Line::from(vec![
             colr("5678", PP, WHITE),
             col("alice", PU, YELLOW),
             colr("0.9", PC, WHITE),
             colr("0.3", PM, WHITE),
             colr("0:02.15", PT, BRIGHT_BLACK),
             sb("zsh -i", GREEN),
+        ]),
+        Line::from(vec![
+            colr("789", PP, WHITE),
+            col("www", PU, YELLOW),
+            colr("0.4", PC, WHITE),
+            colr("1.2", PM, WHITE),
+            colr("12:08.33", PT, BRIGHT_BLACK),
+            sb("nginx: worker process", GREEN),
         ]),
     ];
 

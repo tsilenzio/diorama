@@ -3,141 +3,355 @@ use ratatui::text::Line;
 use super::*;
 
 pub(super) fn git_log_panel() -> Panel {
-    let mut lines = Vec::new();
-
-    lines.push(Line::from(vec![
-        s("$ ", WHITE),
-        s("git log --oneline --graph --all", BRIGHT_WHITE),
-    ]));
-    lines.push(blank());
-    lines.push(Line::from(vec![
-        sb("* ", RED),
-        sb("a1b2c3d ", YELLOW),
-        s("(", WHITE),
-        sb("HEAD -> ", BRIGHT_CYAN),
-        sb("main", GREEN),
-        s(") ", WHITE),
-        s("feat: add search endpoint", WHITE),
-    ]));
-    lines.push(Line::from(vec![
-        sb("* ", RED),
-        sb("e4f5g6h ", YELLOW),
-        s("refactor: extract validation logic", WHITE),
-    ]));
-    lines.push(Line::from(vec![
-        sb("*   ", RED),
-        sb("i7j8k9l ", YELLOW),
-        s("Merge branch 'feat/auth'", WHITE),
-    ]));
-    lines.push(Line::from(vec![
-        sb("|\\", RED),
-    ]));
-    lines.push(Line::from(vec![
-        sb("| * ", RED),
-        sb("m0n1o2p ", YELLOW),
-        s("feat: add JWT middleware", WHITE),
-    ]));
-    lines.push(Line::from(vec![
-        sb("| * ", RED),
-        sb("q3r4s5t ", YELLOW),
-        s("feat: add login endpoint", WHITE),
-    ]));
-    lines.push(Line::from(vec![
-        sb("|/", RED),
-    ]));
-    lines.push(Line::from(vec![
-        sb("* ", RED),
-        sb("u6v7w8x ", YELLOW),
-        s("(", WHITE),
-        sb("tag: ", BRIGHT_CYAN),
-        sb("v0.1.0", BRIGHT_CYAN),
-        s(") ", WHITE),
-        s("chore: initial release", WHITE),
-    ]));
-    lines.push(Line::from(vec![
-        sb("* ", RED),
-        sb("y9z0a1b ", YELLOW),
-        s("fix: handle null response body", WHITE),
-    ]));
-    lines.push(Line::from(vec![
-        sb("* ", RED),
-        sb("c2d3e4f ", YELLOW),
-        s("(", WHITE),
-        sb("origin/main", BRIGHT_RED),
-        s(") ", WHITE),
-        s("initial commit", WHITE),
-    ]));
+    let lines = vec![
+        Line::from(vec![
+            s("$ ", WHITE),
+            s("git log --graph --oneline --all --decorate", BRIGHT_WHITE),
+        ]),
+        blank(),
+        Line::from(vec![
+            s("* ", YELLOW),
+            s("a1b2c3d ", YELLOW),
+            sb("(HEAD -> main) ", GREEN),
+            s("fix: handle edge case in JSON parser for nested arrays", WHITE),
+        ]),
+        Line::from(vec![
+            s("| ", RED),
+            s("Author: Alice Chen ", WHITE),
+            s("<alice@dev.io>", BRIGHT_BLACK),
+            s(" (", BRIGHT_BLACK),
+            s("2 hours ago", CYAN),
+            s(")", BRIGHT_BLACK),
+        ]),
+        Line::from(vec![
+            s("* ", YELLOW),
+            s("e4f5a6b ", YELLOW),
+            s("feat: add JSON output format with pretty-printing support", WHITE),
+        ]),
+        Line::from(vec![
+            s("| ", RED),
+            s("Author: Bob Martinez ", WHITE),
+            s("<bob@dev.io>", BRIGHT_BLACK),
+            s(" (", BRIGHT_BLACK),
+            s("5 hours ago", CYAN),
+            s(")", BRIGHT_BLACK),
+        ]),
+        Line::from(vec![
+            s("*   ", YELLOW),
+            s("b7c8d9e ", YELLOW),
+            sb("(origin/main) ", RED),
+            s("Merge branch 'feature/auth' into main", WHITE),
+        ]),
+        Line::from(vec![
+            sb("|\\  ", RED),
+        ]),
+        Line::from(vec![
+            s("| * ", RED),
+            s("f0a1b2c ", YELLOW),
+            sb("(origin/feature/auth) ", RED),
+            s("feat: implement JWT token validation and refresh flow", WHITE),
+        ]),
+        Line::from(vec![
+            s("| * ", RED),
+            s("3d4e5f6 ", YELLOW),
+            s("feat: add login endpoint with rate limiting", WHITE),
+        ]),
+        Line::from(vec![
+            s("| * ", RED),
+            s("7a8b9c0 ", YELLOW),
+            s("feat: create auth middleware with role-based access", WHITE),
+        ]),
+        Line::from(vec![
+            s("| * ", RED),
+            s("c2d3e4f ", YELLOW),
+            s("test: add integration tests for auth flow", WHITE),
+        ]),
+        Line::from(vec![
+            sb("|/  ", RED),
+        ]),
+        Line::from(vec![
+            s("*   ", YELLOW),
+            s("d1e2f3a ", YELLOW),
+            s("Merge branch 'refactor/config' into main", WHITE),
+        ]),
+        Line::from(vec![
+            sb("|\\  ", RED),
+        ]),
+        Line::from(vec![
+            s("| * ", MAGENTA),
+            s("5e6f7a8 ", YELLOW),
+            s("refactor: extract config module into separate crate", WHITE),
+        ]),
+        Line::from(vec![
+            s("| * ", MAGENTA),
+            s("9b0c1d2 ", YELLOW),
+            s("refactor: replace env vars with typed config struct", WHITE),
+        ]),
+        Line::from(vec![
+            sb("|/  ", MAGENTA),
+        ]),
+        Line::from(vec![
+            s("* ", YELLOW),
+            s("4b5c6d7 ", YELLOW),
+            sb("(tag: v1.2.0) ", MAGENTA),
+            s("chore: release version 1.2.0", WHITE),
+        ]),
+        Line::from(vec![
+            s("* ", YELLOW),
+            s("8e9f0a1 ", YELLOW),
+            s("docs: update README with API examples and curl snippets", WHITE),
+        ]),
+        Line::from(vec![
+            s("* ", YELLOW),
+            s("2b3c4d5 ", YELLOW),
+            s("fix: prevent SQL injection in search endpoint", WHITE),
+        ]),
+        Line::from(vec![
+            s("* ", YELLOW),
+            s("6f7a8b9 ", YELLOW),
+            s("perf: add composite database index for user lookups", WHITE),
+        ]),
+        Line::from(vec![
+            s("* ", YELLOW),
+            s("a3b4c5d ", YELLOW),
+            sb("(tag: v1.1.0) ", MAGENTA),
+            s("chore: release version 1.1.0", WHITE),
+        ]),
+        Line::from(vec![
+            s("* ", YELLOW),
+            s("e6f7a8b ", YELLOW),
+            s("feat: add health check endpoint at /api/v1/health", WHITE),
+        ]),
+        Line::from(vec![
+            s("* ", YELLOW),
+            s("1c2d3e4 ", YELLOW),
+            s("ci: add GitHub Actions workflow for automated testing", WHITE),
+        ]),
+        Line::from(vec![
+            s("* ", YELLOW),
+            s("f5a6b7c ", YELLOW),
+            s("fix: correct timezone handling in event scheduling", WHITE),
+        ]),
+        Line::from(vec![
+            s("* ", YELLOW),
+            s("8d9e0f1 ", YELLOW),
+            sb("(tag: v1.0.0) ", MAGENTA),
+            s("chore: initial release", WHITE),
+        ]),
+    ];
 
     Panel {
         title: "Git Log".into(),
-        icon: '\u{f1d3}',
-        border_color: BRIGHT_RED,
+        icon: '\u{e725}',
+        border_color: YELLOW,
         content: lines,
     }
 }
 
 pub(super) fn git_diff_panel() -> Panel {
-    let mut lines = Vec::new();
-
-    lines.push(Line::from(vec![
-        s("$ ", WHITE),
-        s("git diff src/auth.rs", BRIGHT_WHITE),
-    ]));
-    lines.push(blank());
-    lines.push(Line::from(vec![
-        sb("diff --git a/src/auth.rs b/src/auth.rs", WHITE),
-    ]));
-    lines.push(Line::from(vec![
-        sb("--- a/src/auth.rs", WHITE),
-    ]));
-    lines.push(Line::from(vec![
-        sb("+++ b/src/auth.rs", WHITE),
-    ]));
-    lines.push(Line::from(vec![
-        sb("@@ -14,8 +14,12 @@", CYAN),
-        s(" fn validate_token(token: &str) -> Result<Claims> {", WHITE),
-    ]));
-    lines.push(Line::from(vec![
-        s("     let key = get_signing_key();", WHITE),
-    ]));
-    lines.push(Line::from(vec![
-        sb("-    decode::<Claims>(token, &key, &Validation::default())", RED),
-    ]));
-    lines.push(Line::from(vec![
-        sb("-        .map_err(|e| AuthError::InvalidToken(e.to_string()))", RED),
-    ]));
-    lines.push(Line::from(vec![
-        sb("+    let mut validation = Validation::default();", GREEN),
-    ]));
-    lines.push(Line::from(vec![
-        sb("+    validation.set_audience(&[\"my-app\"]);", GREEN),
-    ]));
-    lines.push(Line::from(vec![
-        sb("+    validation.set_required_spec_claims(&[\"exp\", \"sub\", \"aud\"]);", GREEN),
-    ]));
-    lines.push(Line::from(vec![
-        sb("+", GREEN),
-    ]));
-    lines.push(Line::from(vec![
-        sb("+    decode::<Claims>(token, &key, &validation)", GREEN),
-    ]));
-    lines.push(Line::from(vec![
-        sb("+        .map_err(|e| AuthError::TokenValidation {", GREEN),
-    ]));
-    lines.push(Line::from(vec![
-        sb("+            source: e,", GREEN),
-    ]));
-    lines.push(Line::from(vec![
-        sb("+        })", GREEN),
-    ]));
-    lines.push(Line::from(vec![
-        s(" }", WHITE),
-    ]));
+    let lines = vec![
+        Line::from(vec![
+            s("$ ", WHITE),
+            s("git diff HEAD~1 --stat", BRIGHT_WHITE),
+        ]),
+        Line::from(vec![
+            s(" src/handler.rs | ", WHITE),
+            sb("14 ", GREEN),
+            s("++++++++", GREEN),
+            s("---", RED),
+        ]),
+        Line::from(vec![
+            s(" src/config.rs  |  ", WHITE),
+            sb("4 ", GREEN),
+            s("++", GREEN),
+        ]),
+        Line::from(vec![
+            s(" src/error.rs   |  ", WHITE),
+            sb("8 ", GREEN),
+            s("+++++", GREEN),
+            s("-", RED),
+        ]),
+        Line::from(vec![
+            s(" 3 files changed, ", WHITE),
+            sb("19 insertions(+)", GREEN),
+            s(", ", WHITE),
+            sb("4 deletions(-)", RED),
+        ]),
+        blank(),
+        Line::from(vec![
+            sb("diff --git a/src/handler.rs b/src/handler.rs", WHITE),
+        ]),
+        Line::from(vec![
+            s("index 3a4b5c6..7d8e9f0 100644", BRIGHT_BLACK),
+        ]),
+        Line::from(vec![
+            sb("--- a/src/handler.rs", RED),
+        ]),
+        Line::from(vec![
+            sb("+++ b/src/handler.rs", GREEN),
+        ]),
+        Line::from(vec![
+            sb("@@ -12,7 +12,14 @@", CYAN),
+            s(" impl Handler {", WHITE),
+        ]),
+        Line::from(vec![
+            s("     pub fn handle_request(&self, req: &Request) -> Result<Response> {", WHITE),
+        ]),
+        Line::from(vec![
+            s("         let body = req.body();", WHITE),
+        ]),
+        Line::from(vec![
+            s("         let headers = req.headers().clone();", WHITE),
+        ]),
+        Line::from(vec![
+            sb("-        let response = process(body);", RED),
+        ]),
+        Line::from(vec![
+            sb("+        let response = match self.process(body) {", GREEN),
+        ]),
+        Line::from(vec![
+            sb("+            Ok(resp) => resp,", GREEN),
+        ]),
+        Line::from(vec![
+            sb("+            Err(AppError::NotFound(msg)) => {", GREEN),
+        ]),
+        Line::from(vec![
+            sb("+                tracing::warn!(\"Resource not found: {msg}\");", GREEN),
+        ]),
+        Line::from(vec![
+            sb("+                return Ok(Response::not_found(&msg));", GREEN),
+        ]),
+        Line::from(vec![
+            sb("+            }", GREEN),
+        ]),
+        Line::from(vec![
+            sb("+            Err(e) => {", GREEN),
+        ]),
+        Line::from(vec![
+            sb("+                tracing::error!(\"Internal error: {e:#}\");", GREEN),
+        ]),
+        Line::from(vec![
+            sb("+                return Ok(Response::internal_error());", GREEN),
+        ]),
+        Line::from(vec![
+            sb("+            }", GREEN),
+        ]),
+        Line::from(vec![
+            sb("+        };", GREEN),
+        ]),
+        Line::from(vec![
+            s("         Ok(response.with_headers(headers))", WHITE),
+        ]),
+        Line::from(vec![
+            s("     }", WHITE),
+        ]),
+        blank(),
+        Line::from(vec![
+            sb("diff --git a/src/config.rs b/src/config.rs", WHITE),
+        ]),
+        Line::from(vec![
+            s("index 1a2b3c4..5d6e7f8 100644", BRIGHT_BLACK),
+        ]),
+        Line::from(vec![
+            sb("--- a/src/config.rs", RED),
+        ]),
+        Line::from(vec![
+            sb("+++ b/src/config.rs", GREEN),
+        ]),
+        Line::from(vec![
+            sb("@@ -5,6 +5,10 @@", CYAN),
+            s(" pub struct Config {", WHITE),
+        ]),
+        Line::from(vec![
+            s("     pub host: String,", WHITE),
+        ]),
+        Line::from(vec![
+            s("     pub port: u16,", WHITE),
+        ]),
+        Line::from(vec![
+            sb("+    /// Maximum number of concurrent connections", GREEN),
+        ]),
+        Line::from(vec![
+            sb("+    pub max_connections: usize,", GREEN),
+        ]),
+        Line::from(vec![
+            sb("+    /// Request timeout in milliseconds (0 = no timeout)", GREEN),
+        ]),
+        Line::from(vec![
+            sb("+    pub timeout_ms: u64,", GREEN),
+        ]),
+        Line::from(vec![
+            s("     pub database_url: String,", WHITE),
+        ]),
+        Line::from(vec![
+            s("     pub log_level: String,", WHITE),
+        ]),
+        Line::from(vec![
+            s(" }", WHITE),
+        ]),
+        blank(),
+        Line::from(vec![
+            sb("diff --git a/src/error.rs b/src/error.rs", WHITE),
+        ]),
+        Line::from(vec![
+            s("index 8c9d0e1..2f3a4b5 100644", BRIGHT_BLACK),
+        ]),
+        Line::from(vec![
+            sb("--- a/src/error.rs", RED),
+        ]),
+        Line::from(vec![
+            sb("+++ b/src/error.rs", GREEN),
+        ]),
+        Line::from(vec![
+            sb("@@ -1,8 +1,14 @@", CYAN),
+            s(" use thiserror::Error;", WHITE),
+        ]),
+        blank(),
+        Line::from(vec![
+            s(" #[derive(Debug, Error)]", WHITE),
+        ]),
+        Line::from(vec![
+            s(" pub enum AppError {", WHITE),
+        ]),
+        Line::from(vec![
+            sb("-    #[error(\"internal error\")]", RED),
+        ]),
+        Line::from(vec![
+            sb("-    Internal,", RED),
+        ]),
+        Line::from(vec![
+            sb("+    #[error(\"internal error: {0}\")]", GREEN),
+        ]),
+        Line::from(vec![
+            sb("+    Internal(String),", GREEN),
+        ]),
+        Line::from(vec![
+            sb("+", GREEN),
+        ]),
+        Line::from(vec![
+            sb("+    #[error(\"not found: {0}\")]", GREEN),
+        ]),
+        Line::from(vec![
+            sb("+    NotFound(String),", GREEN),
+        ]),
+        Line::from(vec![
+            sb("+", GREEN),
+        ]),
+        Line::from(vec![
+            sb("+    #[error(\"request timeout after {0}ms\")]", GREEN),
+        ]),
+        Line::from(vec![
+            sb("+    Timeout(u64),", GREEN),
+        ]),
+        Line::from(vec![
+            s(" }", WHITE),
+        ]),
+    ];
 
     Panel {
         title: "Git Diff".into(),
-        icon: '\u{f1d3}',
-        border_color: MAGENTA,
+        icon: '\u{e728}',
+        border_color: GREEN,
         content: lines,
     }
 }

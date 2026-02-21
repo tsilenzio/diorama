@@ -107,17 +107,18 @@ pub struct Panel {
     pub content: Vec<Line<'static>>,
 }
 
-pub fn build_all(_tools: &DetectedTools) -> Vec<Panel> {
+pub fn build_all(tools: &DetectedTools) -> Vec<Panel> {
     vec![
-        languages::python_panel(),
-        languages::node_panel(),
-        languages::rust_panel(),
-        languages::go_panel(),
-        languages::cpp_panel(),
-        languages::zig_panel(),
-        languages::java_panel(),
-        languages::csharp_panel(),
-        languages::ruby_panel(),
+        languages::python_panel(tools),
+        languages::node_panel(tools),
+        languages::rust_panel(tools),
+        languages::go_panel(tools),
+        languages::cpp_panel(tools),
+        languages::zig_panel(tools),
+        languages::java_panel(tools),
+        languages::csharp_panel(tools),
+        languages::ruby_panel(tools),
+        languages::lua_panel(tools),
         git::git_log_panel(),
         git::git_diff_panel(),
         system::docker_panel(),
@@ -130,7 +131,16 @@ pub fn build_all(_tools: &DetectedTools) -> Vec<Panel> {
         devtools::json_panel(),
         interactive::python_repl_panel(),
         interactive::node_repl_panel(),
-        interactive::sudo_panel(),
+        interactive::sudo_panel(tools),
         interactive::color_palette_panel(),
     ]
+}
+
+pub(crate) fn prompt_lines(tools: &DetectedTools, lang: &str) -> Vec<Line<'static>> {
+    tools
+        .prompts
+        .iter()
+        .find(|(name, _)| name == lang)
+        .map(|(_, text)| text.lines.clone())
+        .unwrap_or_else(|| vec![Line::from(s("$ ", WHITE))])
 }
