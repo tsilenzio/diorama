@@ -3,6 +3,8 @@ mod panels;
 mod scaffold;
 mod ui;
 
+use std::io;
+
 use color_eyre::Result;
 use crossterm::{
     event::{self, Event, KeyEventKind},
@@ -10,8 +12,6 @@ use crossterm::{
     ExecutableCommand,
 };
 use ratatui::prelude::*;
-
-use std::io;
 
 use app::App;
 

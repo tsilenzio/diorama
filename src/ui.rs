@@ -30,7 +30,7 @@ fn draw_grid(f: &mut Frame, app: &App) {
         return;
     }
 
-    // Reserve 1 line for status bar
+    // Reserve 1 line for the status bar
     let grid_area = Rect {
         x: area.x,
         y: area.y,
@@ -39,22 +39,29 @@ fn draw_grid(f: &mut Frame, app: &App) {
     };
 
     let cols = columns_for_width(grid_area.width);
+
     let panel_count = app.panels.len();
     let rows = (panel_count + cols - 1) / cols;
-    let total_height = rows as u16 * PANEL_HEIGHT;
+    let panel_height = PANEL_HEIGHT;
+    let total_height = rows as u16 * panel_height;
     let max_scroll = total_height.saturating_sub(grid_area.height);
     let scroll = app.scroll_offset.min(max_scroll);
 
+    // Compute column widths via layout on a single-row slice
     let col_constraints: Vec<Constraint> = (0..cols)
         .map(|_| Constraint::Ratio(1, cols as u32))
         .collect();
     let col_rects = Layout::horizontal(col_constraints).split(grid_area);
 
     for row_idx in 0..rows {
-        let virtual_y = row_idx as u16 * PANEL_HEIGHT;
+        // Virtual y position of this row (before scrolling)
+        let virtual_y = row_idx as u16 * panel_height;
+
+        // Screen y after applying scroll
         let screen_y = virtual_y as i32 - scroll as i32 + grid_area.y as i32;
 
-        if screen_y + PANEL_HEIGHT as i32 <= grid_area.y as i32 {
+        // Skip rows entirely above or below the visible grid area
+        if screen_y + panel_height as i32 <= grid_area.y as i32 {
             continue;
         }
         if screen_y >= (grid_area.y + grid_area.height) as i32 {
@@ -70,9 +77,11 @@ fn draw_grid(f: &mut Frame, app: &App) {
             let panel = &app.panels[panel_idx];
             let grid_bottom = (grid_area.y + grid_area.height) as i32;
 
+            // How many lines are clipped above / below the viewport
             let clip_top = (grid_area.y as i32 - screen_y).max(0) as u16;
-            let clip_bottom = (screen_y + PANEL_HEIGHT as i32 - grid_bottom).max(0) as u16;
-            let visible_height = PANEL_HEIGHT.saturating_sub(clip_top + clip_bottom);
+            let clip_bottom = (screen_y + panel_height as i32 - grid_bottom).max(0) as u16;
+
+            let visible_height = panel_height.saturating_sub(clip_top + clip_bottom);
             if visible_height == 0 {
                 continue;
             }
@@ -89,29 +98,86 @@ fn draw_grid(f: &mut Frame, app: &App) {
                 .fg(BRIGHT_WHITE)
                 .add_modifier(Modifier::BOLD);
 
-            let block = Block::default()
-                .borders(Borders::ALL)
-                .border_style(border_style)
-                .title(Line::from(vec![
-                    Span::styled(format!(" {} ", panel.icon), border_style),
-                    Span::styled(format!("{} ", panel.title), title_style),
-                ]));
+            if clip_top > 0 && visible_height == 1 {
+                // Collapsed: single line └ icon Title ─────┘
+                let buf = f.buffer_mut();
+                let y = rect.y;
+                let x_end = rect.x + rect.width;
 
-            let content_scroll = clip_top.saturating_sub(1);
+                let (mut x, _) =
+                    buf.set_stringn(rect.x, y, "└", 1, border_style);
 
-            let paragraph = Paragraph::new(panel.content.clone())
-                .block(block)
-                .scroll((content_scroll, 0));
+                let icon_str = format!(" {} ", panel.icon);
+                let max_w = x_end.saturating_sub(x + 1) as usize;
+                if max_w > 0 {
+                    (x, _) = buf.set_stringn(x, y, &icon_str, max_w, border_style);
+                }
 
-            f.render_widget(paragraph, rect);
+                let name_str = format!("{} ", panel.title);
+                let max_w = x_end.saturating_sub(x + 1) as usize;
+                if max_w > 0 {
+                    (x, _) = buf.set_stringn(x, y, &name_str, max_w, title_style);
+                }
+
+                let fill_w = x_end.saturating_sub(x + 1) as usize;
+                if fill_w > 0 {
+                    let fill: String = "─".repeat(fill_w);
+                    (x, _) = buf.set_stringn(x, y, &fill, fill_w, border_style);
+                }
+
+                if x < x_end {
+                    buf.set_stringn(x, y, "┘", 1, border_style);
+                }
+            } else {
+                // Normal (clip_top == 0) or pinned title (clip_top > 0).
+                // Title bar always visible — pinned at the top of the viewport
+                // until the panel scrolls away entirely.
+                let borders = Borders::ALL;
+
+                let block = Block::default()
+                    .borders(borders)
+                    .border_style(border_style)
+                    .title(Line::from(vec![
+                        Span::styled(
+                            format!(" {} ", panel.icon),
+                            border_style,
+                        ),
+                        Span::styled(
+                            format!("{} ", panel.title),
+                            title_style,
+                        ),
+                    ]));
+
+                // When top is clipped, scroll past the hidden content.
+                // clip_top includes the top border (1 line), so content
+                // scroll is clip_top - 1.
+                let content_scroll = clip_top.saturating_sub(1);
+
+                let paragraph = Paragraph::new(panel.content.clone())
+                    .block(block)
+                    .scroll((content_scroll, 0));
+
+                f.render_widget(paragraph, rect);
+            }
         }
     }
 
-    // Status bar
-    let status_line = Line::from(vec![Span::styled(
-        " Tab: fullscreen | j/k: scroll | PgUp/PgDn: page | Home/End: jump | q/Esc: quit ",
-        Style::default().fg(BRIGHT_BLACK),
-    )]);
+    // Status bar at bottom
+    let status_line = if app.confirm_quit.is_some_and(|t| t.elapsed().as_secs() < 2) {
+        Line::from(vec![
+            Span::styled(
+                " Press Esc again to quit ",
+                Style::default()
+                    .fg(BRIGHT_WHITE)
+                    .add_modifier(Modifier::BOLD),
+            ),
+        ])
+    } else {
+        Line::from(vec![Span::styled(
+            " Tab: fullscreen │ ↑↓/jk: scroll │ PgUp/PgDn: page │ Home/End: jump │ q/Esc: quit ",
+            Style::default().fg(BRIGHT_BLACK),
+        )])
+    };
     let status_rect = Rect {
         x: area.x,
         y: area.y + area.height.saturating_sub(1),
@@ -130,6 +196,7 @@ fn draw_fullscreen(f: &mut Frame, app: &App) {
 
     let panel = &app.panels[app.selected];
 
+    // Status bar takes 1 line at the bottom
     let main_area = Rect {
         x: area.x,
         y: area.y,
@@ -163,17 +230,22 @@ fn draw_fullscreen(f: &mut Frame, app: &App) {
     let total = app.panels.len();
     let current = app.selected + 1;
     let content_lines = panel.content.len() as u16;
+    // Inner height = main_area minus top/bottom borders
     let inner_h = main_area.height.saturating_sub(2);
     let scroll_indicator = if content_lines > inner_h {
-        let pct = ((app.fullscreen_scroll as u32 * 100)
-            / (content_lines.saturating_sub(inner_h)) as u32)
-            .min(100);
+        let pct = if content_lines <= inner_h {
+            100
+        } else {
+            ((app.fullscreen_scroll as u32 * 100)
+                / (content_lines.saturating_sub(inner_h)) as u32)
+                .min(100)
+        };
         format!(" {}% ", pct)
     } else {
         String::new()
     };
     let status = format!(
-        " {}/{}{} | <-/-> or h/l: prev/next | j/k: scroll | Home/End: top/bottom | Tab/Esc: grid | q: quit ",
+        " {}/{}{} │ ←→/hl: prev/next │ ↑↓/jk: scroll │ Home/End: top/bottom │ Tab/Esc: grid │ q: quit ",
         current, total, scroll_indicator
     );
     let status_line = Line::from(vec![

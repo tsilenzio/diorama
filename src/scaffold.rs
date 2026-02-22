@@ -1,12 +1,11 @@
-use ansi_to_tui::IntoText;
-use color_eyre::Result;
-use crossterm::terminal;
-use ratatui::text::Text;
-use tempfile::TempDir;
-
 use std::fs;
 use std::path::{Path, PathBuf};
 use std::process::Command;
+
+use ansi_to_tui::IntoText;
+use color_eyre::Result;
+use ratatui::text::Text;
+use tempfile::TempDir;
 
 #[derive(Debug, Clone)]
 pub enum PromptEngine {
@@ -21,7 +20,6 @@ pub enum PromptEngine {
 pub struct DetectedTools {
     #[allow(dead_code)]
     pub prompt_engine: PromptEngine,
-    #[allow(dead_code)]
     pub prompts: Vec<(String, Text<'static>)>,
 }
 
@@ -317,7 +315,7 @@ pub fn setup() -> Result<(TempDir, DetectedTools)> {
 
     let engine = detect_prompt_engine();
     let specs = project_specs();
-    let term_width = terminal::size().map(|(w, _)| w).unwrap_or(80);
+    let term_width = crossterm::terminal::size().map(|(w, _)| w).unwrap_or(80);
 
     let mut prompts = Vec::new();
 

@@ -1,5 +1,7 @@
-use color_eyre::Result;
+use std::time::Instant;
+
 use crossterm::event::{KeyCode, KeyEvent, KeyModifiers};
+use tempfile::TempDir;
 
 use crate::panels::{self, Panel};
 use crate::scaffold::{self, DetectedTools};
@@ -17,13 +19,15 @@ pub struct App {
     pub selected: usize,
     pub scroll_offset: u16,
     pub fullscreen_scroll: u16,
+    pub confirm_quit: Option<Instant>,
     #[allow(dead_code)]
-    tools: DetectedTools,
+    pub tools: DetectedTools,
+    pub _scaffold: TempDir,
 }
 
 impl App {
-    pub fn new() -> Result<Self> {
-        let (_scaffold, tools) = scaffold::setup()?;
+    pub fn new() -> color_eyre::Result<Self> {
+        let (scaffold_dir, tools) = scaffold::setup()?;
         let panels = panels::build_all(&tools);
 
         Ok(Self {
@@ -32,11 +36,19 @@ impl App {
             selected: 0,
             scroll_offset: 0,
             fullscreen_scroll: 0,
+            confirm_quit: None,
             tools,
+            _scaffold: scaffold_dir,
         })
     }
 
+    /// Returns true if the app should quit.
     pub fn handle_key(&mut self, key: KeyEvent) -> bool {
+        // Any non-Esc key clears the quit confirmation
+        if key.code != KeyCode::Esc {
+            self.confirm_quit = None;
+        }
+
         match key.code {
             KeyCode::Char('q') | KeyCode::Char('Q') => return true,
             KeyCode::Char('c') if key.modifiers.contains(KeyModifiers::CONTROL) => return true,
@@ -44,8 +56,14 @@ impl App {
             KeyCode::Esc => {
                 if self.mode == ViewMode::FullScreen {
                     self.mode = ViewMode::Grid;
+                    self.confirm_quit = None;
+                } else if let Some(t) = self.confirm_quit {
+                    if t.elapsed().as_secs() < 2 {
+                        return true;
+                    }
+                    self.confirm_quit = Some(Instant::now());
                 } else {
-                    return true;
+                    self.confirm_quit = Some(Instant::now());
                 }
             }
 
@@ -55,7 +73,9 @@ impl App {
                         self.mode = ViewMode::FullScreen;
                         self.fullscreen_scroll = 0;
                     }
-                    ViewMode::FullScreen => self.mode = ViewMode::Grid,
+                    ViewMode::FullScreen => {
+                        self.mode = ViewMode::Grid;
+                    }
                 }
             }
 
@@ -97,11 +117,12 @@ impl App {
                 if key.code == KeyCode::PageDown
                     || key.modifiers.contains(KeyModifiers::CONTROL) =>
             {
-                let page = self.page_size();
                 if self.mode == ViewMode::Grid {
+                    let page = self.page_size();
                     self.scroll_offset = self.scroll_offset.saturating_add(page);
                     self.clamp_scroll();
                 } else {
+                    let page = self.page_size();
                     self.fullscreen_scroll = self.fullscreen_scroll.saturating_add(page);
                     self.clamp_fullscreen_scroll();
                 }
@@ -110,10 +131,11 @@ impl App {
                 if key.code == KeyCode::PageUp
                     || key.modifiers.contains(KeyModifiers::CONTROL) =>
             {
-                let page = self.page_size();
                 if self.mode == ViewMode::Grid {
+                    let page = self.page_size();
                     self.scroll_offset = self.scroll_offset.saturating_sub(page);
                 } else {
+                    let page = self.page_size();
                     self.fullscreen_scroll = self.fullscreen_scroll.saturating_sub(page);
                 }
             }
