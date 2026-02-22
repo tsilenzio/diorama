@@ -185,6 +185,19 @@ dependencies = [
 ]
 
 [[package]]
+name = "diorama"
+version = "0.1.0"
+dependencies = [
+ "ansi-to-tui",
+ "color-eyre",
+ "crossterm",
+ "ratatui",
+ "tempfile",
+ "thiserror 2.0.18",
+ "which",
+]
+
+[[package]]
 name = "either"
 version = "1.15.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -766,19 +779,6 @@ dependencies = [
  "once_cell",
  "rustix 1.1.4",
  "windows-sys 0.61.2",
-]
-
-[[package]]
-name = "term-preview"
-version = "0.1.0"
-dependencies = [
- "ansi-to-tui",
- "color-eyre",
- "crossterm",
- "ratatui",
- "tempfile",
- "thiserror 2.0.18",
- "which",
 ]
 
 [[package]]

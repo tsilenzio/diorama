@@ -310,7 +310,7 @@ fn init_git_repo(dir: &Path) -> Result<()> {
 
 pub fn setup() -> Result<(TempDir, DetectedTools)> {
     let scaffold_dir = tempfile::Builder::new()
-        .prefix("term-preview-")
+        .prefix("diorama-")
         .tempdir()?;
 
     let engine = detect_prompt_engine();
