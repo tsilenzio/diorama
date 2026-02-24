@@ -135,7 +135,10 @@ pub(super) fn file_listing_panel() -> Panel {
     let lines = vec![
         Line::from(vec![
             s("$ ", WHITE),
-            s("eza -la --git --icons --group --time-style relative", BRIGHT_WHITE),
+            s(
+                "eza -la --git --icons --group --time-style relative",
+                BRIGHT_WHITE,
+            ),
         ]),
         blank(),
         Line::from(vec![
@@ -420,10 +423,7 @@ pub(super) fn system_info_panel() -> Panel {
             s("87%", GREEN),
             s(" [Charging]", BRIGHT_BLACK),
         ]),
-        Line::from(vec![
-            sb("Locale:   ", BLUE),
-            s("en_US.UTF-8", WHITE),
-        ]),
+        Line::from(vec![sb("Locale:   ", BLUE), s("en_US.UTF-8", WHITE)]),
         blank(),
         Line::from(vec![
             s("  ", WHITE),
@@ -468,7 +468,10 @@ pub(super) fn process_monitor_panel() -> Panel {
             s(&filled, color),
             s(&empty, BRIGHT_BLACK),
             s("] ", BRIGHT_BLACK),
-            s(&format!("{:.1}%", (used as f64 / total as f64) * 100.0), WHITE),
+            s(
+                &format!("{:.1}%", (used as f64 / total as f64) * 100.0),
+                WHITE,
+            ),
         ])
     }
 
@@ -487,7 +490,7 @@ pub(super) fn process_monitor_panel() -> Panel {
         bar("CPU4:  ", 34, 100, GREEN),
         bar("CPU5:  ", 67, 100, YELLOW),
         bar("Mem:   ", 82, 100, YELLOW),
-        bar("Swap:  ",  3, 100, GREEN),
+        bar("Swap:  ", 3, 100, GREEN),
         blank(),
         Line::from(vec![
             s("Tasks: ", WHITE),

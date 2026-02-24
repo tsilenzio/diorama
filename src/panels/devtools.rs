@@ -148,7 +148,10 @@ pub(super) fn log_output_panel() -> Panel {
             s("[db]       ", CYAN),
             s("Query timeout after ", WHITE),
             sb("30s", RED),
-            s(": SELECT * FROM orders WHERE user_id = $1 AND status IN ($2, $3)", WHITE),
+            s(
+                ": SELECT * FROM orders WHERE user_id = $1 AND status IN ($2, $3)",
+                WHITE,
+            ),
         ]),
         Line::from(vec![
             sd("2025-02-23T10:15:37.456Z ", BRIGHT_BLACK),
@@ -177,7 +180,10 @@ pub(super) fn log_output_panel() -> Panel {
             sfgbg(" FATAL ", BRIGHT_WHITE, RED),
             s(" ", WHITE),
             s("[server]   ", CYAN),
-            s("Unrecoverable error: database connection pool collapsed — shutting down", RED),
+            s(
+                "Unrecoverable error: database connection pool collapsed — shutting down",
+                RED,
+            ),
         ]),
         Line::from(vec![
             sd("2025-02-23T10:15:38.790Z ", BRIGHT_BLACK),
@@ -232,13 +238,14 @@ pub(super) fn ripgrep_panel() -> Panel {
             sd("-", BRIGHT_BLACK),
             s("        let body = req.body();", WHITE),
         ]),
-        Line::from(vec![
-            sd("--", BRIGHT_BLACK),
-        ]),
+        Line::from(vec![sd("--", BRIGHT_BLACK)]),
         Line::from(vec![
             sd("27", BRIGHT_BLACK),
             sd("-", BRIGHT_BLACK),
-            s("        // Validate and then delegate to the inner handler", BRIGHT_BLACK),
+            s(
+                "        // Validate and then delegate to the inner handler",
+                BRIGHT_BLACK,
+            ),
         ]),
         Line::from(vec![
             s("28", GREEN),
@@ -252,9 +259,7 @@ pub(super) fn ripgrep_panel() -> Panel {
             sd("-", BRIGHT_BLACK),
             s("        Ok(Response::new(result))", WHITE),
         ]),
-        Line::from(vec![
-            sd("--", BRIGHT_BLACK),
-        ]),
+        Line::from(vec![sd("--", BRIGHT_BLACK)]),
         Line::from(vec![
             sd("44", BRIGHT_BLACK),
             sd("-", BRIGHT_BLACK),
@@ -265,7 +270,10 @@ pub(super) fn ripgrep_panel() -> Panel {
             s(":", BRIGHT_BLACK),
             s("    fn ", BLUE),
             sfgbg("handle_request", BLACK, YELLOW),
-            s("_inner(&self, body: &[u8], headers: &Headers) -> Result<Vec<u8>> {", WHITE),
+            s(
+                "_inner(&self, body: &[u8], headers: &Headers) -> Result<Vec<u8>> {",
+                WHITE,
+            ),
         ]),
         Line::from(vec![
             sd("46", BRIGHT_BLACK),
@@ -291,13 +299,14 @@ pub(super) fn ripgrep_panel() -> Panel {
             sd("-", BRIGHT_BLACK),
             s("use crate::middleware::auth_guard;", WHITE),
         ]),
-        Line::from(vec![
-            sd("--", BRIGHT_BLACK),
-        ]),
+        Line::from(vec![sd("--", BRIGHT_BLACK)]),
         Line::from(vec![
             sd("33", BRIGHT_BLACK),
             sd("-", BRIGHT_BLACK),
-            s("            .route(\"/api/v1/health\", get(health_check))", WHITE),
+            s(
+                "            .route(\"/api/v1/health\", get(health_check))",
+                WHITE,
+            ),
         ]),
         Line::from(vec![
             s("34", GREEN),
@@ -309,7 +318,10 @@ pub(super) fn ripgrep_panel() -> Panel {
         Line::from(vec![
             sd("35", BRIGHT_BLACK),
             sd("-", BRIGHT_BLACK),
-            s("            .route(\"/api/v1/status\", get(status_check))", WHITE),
+            s(
+                "            .route(\"/api/v1/status\", get(status_check))",
+                WHITE,
+            ),
         ]),
         blank(),
         Line::from(sb("tests/handler_test.rs", MAGENTA)),
@@ -330,9 +342,7 @@ pub(super) fn ripgrep_panel() -> Panel {
             sd("-", BRIGHT_BLACK),
             s("use myapp::test_helpers::mock_request;", WHITE),
         ]),
-        Line::from(vec![
-            sd("--", BRIGHT_BLACK),
-        ]),
+        Line::from(vec![sd("--", BRIGHT_BLACK)]),
         Line::from(vec![
             sd("11", BRIGHT_BLACK),
             sd("-", BRIGHT_BLACK),
@@ -350,9 +360,7 @@ pub(super) fn ripgrep_panel() -> Panel {
             sd("-", BRIGHT_BLACK),
             s("        assert!(resp.is_ok());", WHITE),
         ]),
-        Line::from(vec![
-            sd("--", BRIGHT_BLACK),
-        ]),
+        Line::from(vec![sd("--", BRIGHT_BLACK)]),
         Line::from(vec![
             sd("23", BRIGHT_BLACK),
             sd("-", BRIGHT_BLACK),
@@ -402,7 +410,10 @@ pub(super) fn kubectl_panel() -> Panel {
     let lines = vec![
         Line::from(vec![
             s("$ ", WHITE),
-            s("kubectl get pods --all-namespaces --sort-by=.metadata.namespace", BRIGHT_WHITE),
+            s(
+                "kubectl get pods --all-namespaces --sort-by=.metadata.namespace",
+                BRIGHT_WHITE,
+            ),
         ]),
         blank(),
         Line::from(vec![
@@ -563,7 +574,10 @@ pub(super) fn json_panel() -> Panel {
     let lines = vec![
         Line::from(vec![
             s("$ ", WHITE),
-            s("curl -s https://api.example.com/v1/config | jq .", BRIGHT_WHITE),
+            s(
+                "curl -s https://api.example.com/v1/config | jq .",
+                BRIGHT_WHITE,
+            ),
         ]),
         Line::from(s("{", WHITE)),
         Line::from(vec![
@@ -654,15 +668,8 @@ pub(super) fn json_panel() -> Panel {
             s(": ", WHITE),
             s("300000", MAGENTA),
         ]),
-        Line::from(vec![
-            s("  }", WHITE),
-            s(",", WHITE),
-        ]),
-        Line::from(vec![
-            s("  ", WHITE),
-            sb("\"cache\"", BLUE),
-            s(": {", WHITE),
-        ]),
+        Line::from(vec![s("  }", WHITE), s(",", WHITE)]),
+        Line::from(vec![s("  ", WHITE), sb("\"cache\"", BLUE), s(": {", WHITE)]),
         Line::from(vec![
             s("    ", WHITE),
             sb("\"provider\"", BLUE),
@@ -690,20 +697,13 @@ pub(super) fn json_panel() -> Panel {
             s(": ", WHITE),
             s("512", MAGENTA),
         ]),
-        Line::from(vec![
-            s("  }", WHITE),
-            s(",", WHITE),
-        ]),
+        Line::from(vec![s("  }", WHITE), s(",", WHITE)]),
         Line::from(vec![
             s("  ", WHITE),
             sb("\"features\"", BLUE),
             s(": [", WHITE),
         ]),
-        Line::from(vec![
-            s("    ", WHITE),
-            s("\"auth\"", GREEN),
-            s(",", WHITE),
-        ]),
+        Line::from(vec![s("    ", WHITE), s("\"auth\"", GREEN), s(",", WHITE)]),
         Line::from(vec![
             s("    ", WHITE),
             s("\"caching\"", GREEN),
@@ -719,14 +719,8 @@ pub(super) fn json_panel() -> Panel {
             s("\"websockets\"", GREEN),
             s(",", WHITE),
         ]),
-        Line::from(vec![
-            s("    ", WHITE),
-            s("\"metrics\"", GREEN),
-        ]),
-        Line::from(vec![
-            s("  ]", WHITE),
-            s(",", WHITE),
-        ]),
+        Line::from(vec![s("    ", WHITE), s("\"metrics\"", GREEN)]),
+        Line::from(vec![s("  ]", WHITE), s(",", WHITE)]),
         Line::from(vec![
             s("  ", WHITE),
             sb("\"rate_limit\"", BLUE),
@@ -745,10 +739,7 @@ pub(super) fn json_panel() -> Panel {
             s(": ", WHITE),
             s("50", MAGENTA),
         ]),
-        Line::from(vec![
-            s("  }", WHITE),
-            s(",", WHITE),
-        ]),
+        Line::from(vec![s("  }", WHITE), s(",", WHITE)]),
         Line::from(vec![
             s("  ", WHITE),
             sb("\"cors_origins\"", BLUE),

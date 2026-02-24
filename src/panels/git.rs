@@ -13,7 +13,10 @@ pub(super) fn git_log_panel() -> Panel {
             s("* ", YELLOW),
             s("a1b2c3d ", YELLOW),
             sb("(HEAD -> main) ", GREEN),
-            s("fix: handle edge case in JSON parser for nested arrays", WHITE),
+            s(
+                "fix: handle edge case in JSON parser for nested arrays",
+                WHITE,
+            ),
         ]),
         Line::from(vec![
             s("| ", RED),
@@ -26,7 +29,10 @@ pub(super) fn git_log_panel() -> Panel {
         Line::from(vec![
             s("* ", YELLOW),
             s("e4f5a6b ", YELLOW),
-            s("feat: add JSON output format with pretty-printing support", WHITE),
+            s(
+                "feat: add JSON output format with pretty-printing support",
+                WHITE,
+            ),
         ]),
         Line::from(vec![
             s("| ", RED),
@@ -42,14 +48,15 @@ pub(super) fn git_log_panel() -> Panel {
             sb("(origin/main) ", RED),
             s("Merge branch 'feature/auth' into main", WHITE),
         ]),
-        Line::from(vec![
-            sb("|\\  ", RED),
-        ]),
+        Line::from(vec![sb("|\\  ", RED)]),
         Line::from(vec![
             s("| * ", RED),
             s("f0a1b2c ", YELLOW),
             sb("(origin/feature/auth) ", RED),
-            s("feat: implement JWT token validation and refresh flow", WHITE),
+            s(
+                "feat: implement JWT token validation and refresh flow",
+                WHITE,
+            ),
         ]),
         Line::from(vec![
             s("| * ", RED),
@@ -66,17 +73,13 @@ pub(super) fn git_log_panel() -> Panel {
             s("c2d3e4f ", YELLOW),
             s("test: add integration tests for auth flow", WHITE),
         ]),
-        Line::from(vec![
-            sb("|/  ", RED),
-        ]),
+        Line::from(vec![sb("|/  ", RED)]),
         Line::from(vec![
             s("*   ", YELLOW),
             s("d1e2f3a ", YELLOW),
             s("Merge branch 'refactor/config' into main", WHITE),
         ]),
-        Line::from(vec![
-            sb("|\\  ", RED),
-        ]),
+        Line::from(vec![sb("|\\  ", RED)]),
         Line::from(vec![
             s("| * ", MAGENTA),
             s("5e6f7a8 ", YELLOW),
@@ -87,9 +90,7 @@ pub(super) fn git_log_panel() -> Panel {
             s("9b0c1d2 ", YELLOW),
             s("refactor: replace env vars with typed config struct", WHITE),
         ]),
-        Line::from(vec![
-            sb("|/  ", MAGENTA),
-        ]),
+        Line::from(vec![sb("|/  ", MAGENTA)]),
         Line::from(vec![
             s("* ", YELLOW),
             s("4b5c6d7 ", YELLOW),
@@ -99,7 +100,10 @@ pub(super) fn git_log_panel() -> Panel {
         Line::from(vec![
             s("* ", YELLOW),
             s("8e9f0a1 ", YELLOW),
-            s("docs: update README with API examples and curl snippets", WHITE),
+            s(
+                "docs: update README with API examples and curl snippets",
+                WHITE,
+            ),
         ]),
         Line::from(vec![
             s("* ", YELLOW),
@@ -125,7 +129,10 @@ pub(super) fn git_log_panel() -> Panel {
         Line::from(vec![
             s("* ", YELLOW),
             s("1c2d3e4 ", YELLOW),
-            s("ci: add GitHub Actions workflow for automated testing", WHITE),
+            s(
+                "ci: add GitHub Actions workflow for automated testing",
+                WHITE,
+            ),
         ]),
         Line::from(vec![
             s("* ", YELLOW),
@@ -178,174 +185,114 @@ pub(super) fn git_diff_panel() -> Panel {
             sb("4 deletions(-)", RED),
         ]),
         blank(),
-        Line::from(vec![
-            sb("diff --git a/src/handler.rs b/src/handler.rs", WHITE),
-        ]),
-        Line::from(vec![
-            s("index 3a4b5c6..7d8e9f0 100644", BRIGHT_BLACK),
-        ]),
-        Line::from(vec![
-            sb("--- a/src/handler.rs", RED),
-        ]),
-        Line::from(vec![
-            sb("+++ b/src/handler.rs", GREEN),
-        ]),
+        Line::from(vec![sb(
+            "diff --git a/src/handler.rs b/src/handler.rs",
+            WHITE,
+        )]),
+        Line::from(vec![s("index 3a4b5c6..7d8e9f0 100644", BRIGHT_BLACK)]),
+        Line::from(vec![sb("--- a/src/handler.rs", RED)]),
+        Line::from(vec![sb("+++ b/src/handler.rs", GREEN)]),
         Line::from(vec![
             sb("@@ -12,7 +12,14 @@", CYAN),
             s(" impl Handler {", WHITE),
         ]),
-        Line::from(vec![
-            s("     pub fn handle_request(&self, req: &Request) -> Result<Response> {", WHITE),
-        ]),
-        Line::from(vec![
-            s("         let body = req.body();", WHITE),
-        ]),
-        Line::from(vec![
-            s("         let headers = req.headers().clone();", WHITE),
-        ]),
-        Line::from(vec![
-            sb("-        let response = process(body);", RED),
-        ]),
-        Line::from(vec![
-            sb("+        let response = match self.process(body) {", GREEN),
-        ]),
-        Line::from(vec![
-            sb("+            Ok(resp) => resp,", GREEN),
-        ]),
-        Line::from(vec![
-            sb("+            Err(AppError::NotFound(msg)) => {", GREEN),
-        ]),
-        Line::from(vec![
-            sb("+                tracing::warn!(\"Resource not found: {msg}\");", GREEN),
-        ]),
-        Line::from(vec![
-            sb("+                return Ok(Response::not_found(&msg));", GREEN),
-        ]),
-        Line::from(vec![
-            sb("+            }", GREEN),
-        ]),
-        Line::from(vec![
-            sb("+            Err(e) => {", GREEN),
-        ]),
-        Line::from(vec![
-            sb("+                tracing::error!(\"Internal error: {e:#}\");", GREEN),
-        ]),
-        Line::from(vec![
-            sb("+                return Ok(Response::internal_error());", GREEN),
-        ]),
-        Line::from(vec![
-            sb("+            }", GREEN),
-        ]),
-        Line::from(vec![
-            sb("+        };", GREEN),
-        ]),
-        Line::from(vec![
-            s("         Ok(response.with_headers(headers))", WHITE),
-        ]),
-        Line::from(vec![
-            s("     }", WHITE),
-        ]),
+        Line::from(vec![s(
+            "     pub fn handle_request(&self, req: &Request) -> Result<Response> {",
+            WHITE,
+        )]),
+        Line::from(vec![s("         let body = req.body();", WHITE)]),
+        Line::from(vec![s(
+            "         let headers = req.headers().clone();",
+            WHITE,
+        )]),
+        Line::from(vec![sb("-        let response = process(body);", RED)]),
+        Line::from(vec![sb(
+            "+        let response = match self.process(body) {",
+            GREEN,
+        )]),
+        Line::from(vec![sb("+            Ok(resp) => resp,", GREEN)]),
+        Line::from(vec![sb(
+            "+            Err(AppError::NotFound(msg)) => {",
+            GREEN,
+        )]),
+        Line::from(vec![sb(
+            "+                tracing::warn!(\"Resource not found: {msg}\");",
+            GREEN,
+        )]),
+        Line::from(vec![sb(
+            "+                return Ok(Response::not_found(&msg));",
+            GREEN,
+        )]),
+        Line::from(vec![sb("+            }", GREEN)]),
+        Line::from(vec![sb("+            Err(e) => {", GREEN)]),
+        Line::from(vec![sb(
+            "+                tracing::error!(\"Internal error: {e:#}\");",
+            GREEN,
+        )]),
+        Line::from(vec![sb(
+            "+                return Ok(Response::internal_error());",
+            GREEN,
+        )]),
+        Line::from(vec![sb("+            }", GREEN)]),
+        Line::from(vec![sb("+        };", GREEN)]),
+        Line::from(vec![s(
+            "         Ok(response.with_headers(headers))",
+            WHITE,
+        )]),
+        Line::from(vec![s("     }", WHITE)]),
         blank(),
-        Line::from(vec![
-            sb("diff --git a/src/config.rs b/src/config.rs", WHITE),
-        ]),
-        Line::from(vec![
-            s("index 1a2b3c4..5d6e7f8 100644", BRIGHT_BLACK),
-        ]),
-        Line::from(vec![
-            sb("--- a/src/config.rs", RED),
-        ]),
-        Line::from(vec![
-            sb("+++ b/src/config.rs", GREEN),
-        ]),
+        Line::from(vec![sb(
+            "diff --git a/src/config.rs b/src/config.rs",
+            WHITE,
+        )]),
+        Line::from(vec![s("index 1a2b3c4..5d6e7f8 100644", BRIGHT_BLACK)]),
+        Line::from(vec![sb("--- a/src/config.rs", RED)]),
+        Line::from(vec![sb("+++ b/src/config.rs", GREEN)]),
         Line::from(vec![
             sb("@@ -5,6 +5,10 @@", CYAN),
             s(" pub struct Config {", WHITE),
         ]),
-        Line::from(vec![
-            s("     pub host: String,", WHITE),
-        ]),
-        Line::from(vec![
-            s("     pub port: u16,", WHITE),
-        ]),
-        Line::from(vec![
-            sb("+    /// Maximum number of concurrent connections", GREEN),
-        ]),
-        Line::from(vec![
-            sb("+    pub max_connections: usize,", GREEN),
-        ]),
-        Line::from(vec![
-            sb("+    /// Request timeout in milliseconds (0 = no timeout)", GREEN),
-        ]),
-        Line::from(vec![
-            sb("+    pub timeout_ms: u64,", GREEN),
-        ]),
-        Line::from(vec![
-            s("     pub database_url: String,", WHITE),
-        ]),
-        Line::from(vec![
-            s("     pub log_level: String,", WHITE),
-        ]),
-        Line::from(vec![
-            s(" }", WHITE),
-        ]),
+        Line::from(vec![s("     pub host: String,", WHITE)]),
+        Line::from(vec![s("     pub port: u16,", WHITE)]),
+        Line::from(vec![sb(
+            "+    /// Maximum number of concurrent connections",
+            GREEN,
+        )]),
+        Line::from(vec![sb("+    pub max_connections: usize,", GREEN)]),
+        Line::from(vec![sb(
+            "+    /// Request timeout in milliseconds (0 = no timeout)",
+            GREEN,
+        )]),
+        Line::from(vec![sb("+    pub timeout_ms: u64,", GREEN)]),
+        Line::from(vec![s("     pub database_url: String,", WHITE)]),
+        Line::from(vec![s("     pub log_level: String,", WHITE)]),
+        Line::from(vec![s(" }", WHITE)]),
         blank(),
-        Line::from(vec![
-            sb("diff --git a/src/error.rs b/src/error.rs", WHITE),
-        ]),
-        Line::from(vec![
-            s("index 8c9d0e1..2f3a4b5 100644", BRIGHT_BLACK),
-        ]),
-        Line::from(vec![
-            sb("--- a/src/error.rs", RED),
-        ]),
-        Line::from(vec![
-            sb("+++ b/src/error.rs", GREEN),
-        ]),
+        Line::from(vec![sb("diff --git a/src/error.rs b/src/error.rs", WHITE)]),
+        Line::from(vec![s("index 8c9d0e1..2f3a4b5 100644", BRIGHT_BLACK)]),
+        Line::from(vec![sb("--- a/src/error.rs", RED)]),
+        Line::from(vec![sb("+++ b/src/error.rs", GREEN)]),
         Line::from(vec![
             sb("@@ -1,8 +1,14 @@", CYAN),
             s(" use thiserror::Error;", WHITE),
         ]),
         blank(),
-        Line::from(vec![
-            s(" #[derive(Debug, Error)]", WHITE),
-        ]),
-        Line::from(vec![
-            s(" pub enum AppError {", WHITE),
-        ]),
-        Line::from(vec![
-            sb("-    #[error(\"internal error\")]", RED),
-        ]),
-        Line::from(vec![
-            sb("-    Internal,", RED),
-        ]),
-        Line::from(vec![
-            sb("+    #[error(\"internal error: {0}\")]", GREEN),
-        ]),
-        Line::from(vec![
-            sb("+    Internal(String),", GREEN),
-        ]),
-        Line::from(vec![
-            sb("+", GREEN),
-        ]),
-        Line::from(vec![
-            sb("+    #[error(\"not found: {0}\")]", GREEN),
-        ]),
-        Line::from(vec![
-            sb("+    NotFound(String),", GREEN),
-        ]),
-        Line::from(vec![
-            sb("+", GREEN),
-        ]),
-        Line::from(vec![
-            sb("+    #[error(\"request timeout after {0}ms\")]", GREEN),
-        ]),
-        Line::from(vec![
-            sb("+    Timeout(u64),", GREEN),
-        ]),
-        Line::from(vec![
-            s(" }", WHITE),
-        ]),
+        Line::from(vec![s(" #[derive(Debug, Error)]", WHITE)]),
+        Line::from(vec![s(" pub enum AppError {", WHITE)]),
+        Line::from(vec![sb("-    #[error(\"internal error\")]", RED)]),
+        Line::from(vec![sb("-    Internal,", RED)]),
+        Line::from(vec![sb("+    #[error(\"internal error: {0}\")]", GREEN)]),
+        Line::from(vec![sb("+    Internal(String),", GREEN)]),
+        Line::from(vec![sb("+", GREEN)]),
+        Line::from(vec![sb("+    #[error(\"not found: {0}\")]", GREEN)]),
+        Line::from(vec![sb("+    NotFound(String),", GREEN)]),
+        Line::from(vec![sb("+", GREEN)]),
+        Line::from(vec![sb(
+            "+    #[error(\"request timeout after {0}ms\")]",
+            GREEN,
+        )]),
+        Line::from(vec![sb("+    Timeout(u64),", GREEN)]),
+        Line::from(vec![s(" }", WHITE)]),
     ];
 
     Panel {

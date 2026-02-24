@@ -9,5 +9,6 @@ crossterm = "0.28"
 ansi-to-tui = "7"
 tempfile = "3"
 which = "7"
+clap = { version = "4", features = ["derive"] }
 color-eyre = "0.6"
 thiserror = "2"

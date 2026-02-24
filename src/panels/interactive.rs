@@ -1,8 +1,8 @@
 use ratatui::style::Color;
 use ratatui::text::{Line, Span};
 
-use crate::scaffold::DetectedTools;
 use super::*;
+use crate::scaffold::DetectedTools;
 
 pub(super) fn python_repl_panel() -> Panel {
     let lines = vec![
@@ -212,20 +212,10 @@ pub(super) fn node_repl_panel() -> Panel {
             s("true", YELLOW),
             s(" }", WHITE),
         ]),
-        Line::from(vec![
-            sb("... ", BRIGHT_BLACK),
-            s("}", WHITE),
-        ]),
-        Line::from(vec![
-            s("undefined", BRIGHT_BLACK),
-        ]),
-        Line::from(vec![
-            sb("> ", GREEN),
-            s("user", WHITE),
-        ]),
-        Line::from(vec![
-            s("{", WHITE),
-        ]),
+        Line::from(vec![sb("... ", BRIGHT_BLACK), s("}", WHITE)]),
+        Line::from(vec![s("undefined", BRIGHT_BLACK)]),
+        Line::from(vec![sb("> ", GREEN), s("user", WHITE)]),
+        Line::from(vec![s("{", WHITE)]),
         Line::from(vec![
             s("  name: ", WHITE),
             s("'Alice Chen'", GREEN),
@@ -236,11 +226,7 @@ pub(super) fn node_repl_panel() -> Panel {
             s("'alice@example.com'", GREEN),
             s(",", WHITE),
         ]),
-        Line::from(vec![
-            s("  age: ", WHITE),
-            s("30", MAGENTA),
-            s(",", WHITE),
-        ]),
+        Line::from(vec![s("  age: ", WHITE), s("30", MAGENTA), s(",", WHITE)]),
         Line::from(vec![
             s("  roles: [ ", WHITE),
             s("'admin'", GREEN),
@@ -255,9 +241,7 @@ pub(super) fn node_repl_panel() -> Panel {
             s("true", YELLOW),
             s(" }", WHITE),
         ]),
-        Line::from(vec![
-            s("}", WHITE),
-        ]),
+        Line::from(vec![s("}", WHITE)]),
         Line::from(vec![
             sb("> ", GREEN),
             s("Object", CYAN),
@@ -296,13 +280,8 @@ pub(super) fn node_repl_panel() -> Panel {
             s("const ", BLUE),
             s("{ name, ...rest } = user", WHITE),
         ]),
-        Line::from(vec![
-            s("undefined", BRIGHT_BLACK),
-        ]),
-        Line::from(vec![
-            sb("> ", GREEN),
-            s("rest", WHITE),
-        ]),
+        Line::from(vec![s("undefined", BRIGHT_BLACK)]),
+        Line::from(vec![sb("> ", GREEN), s("rest", WHITE)]),
         Line::from(vec![
             s("{ email: ", WHITE),
             s("'alice@example.com'", GREEN),
@@ -323,9 +302,10 @@ pub(super) fn node_repl_panel() -> Panel {
             s("'{ invalid json }'", GREEN),
             s(")", WHITE),
         ]),
-        Line::from(vec![
-            s("Uncaught SyntaxError: Expected property name or '}' in JSON at position 2", RED),
-        ]),
+        Line::from(vec![s(
+            "Uncaught SyntaxError: Expected property name or '}' in JSON at position 2",
+            RED,
+        )]),
         Line::from(vec![
             s("    at JSON.parse (", BRIGHT_BLACK),
             s("<anonymous>", WHITE),
@@ -339,12 +319,8 @@ pub(super) fn node_repl_panel() -> Panel {
             s("42", MAGENTA),
             s(")", WHITE),
         ]),
-        Line::from(vec![
-            s("42", MAGENTA),
-        ]),
-        Line::from(vec![
-            sb("> ", GREEN),
-        ]),
+        Line::from(vec![s("42", MAGENTA)]),
+        Line::from(vec![sb("> ", GREEN)]),
     ];
 
     Panel {
@@ -370,24 +346,31 @@ pub(super) fn sudo_panel(tools: &DetectedTools) -> Panel {
             ])]
         });
 
-    let mut lines = vec![
-        Line::from(sd("# Normal user prompt:", BRIGHT_BLACK)),
-    ];
+    let mut lines = vec![Line::from(sd("# Normal user prompt:", BRIGHT_BLACK))];
     lines.extend(user_prompt);
     lines.push(Line::from(vec![s("whoami", BRIGHT_WHITE)]));
     lines.push(Line::from(s(&user, WHITE)));
     lines.push(Line::from(vec![s("id", BRIGHT_WHITE)]));
     lines.push(Line::from(vec![
-        s(&format!("uid=1000({user}) gid=1000({user}) groups=1000({user}),"), WHITE),
+        s(
+            &format!("uid=1000({user}) gid=1000({user}) groups=1000({user}),"),
+            WHITE,
+        ),
         s("4(adm),27(sudo),999(docker)", BRIGHT_BLACK),
     ]));
     lines.push(blank());
-    lines.push(Line::from(sd("# Attempting restricted access:", BRIGHT_BLACK)));
+    lines.push(Line::from(sd(
+        "# Attempting restricted access:",
+        BRIGHT_BLACK,
+    )));
     lines.push(Line::from(vec![s("cat /etc/shadow", BRIGHT_WHITE)]));
     lines.push(Line::from(sb("cat: /etc/shadow: Permission denied", RED)));
     lines.push(blank());
     lines.push(Line::from(sd("# Elevated prompt (sudo -s):", BRIGHT_BLACK)));
-    lines.push(Line::from(vec![s(&format!("[sudo] password for {user}: "), BRIGHT_WHITE)]));
+    lines.push(Line::from(vec![s(
+        &format!("[sudo] password for {user}: "),
+        BRIGHT_WHITE,
+    )]));
     lines.push(Line::from(vec![
         sfgbg(" ⚡", YELLOW, RED),
         sfgbg(" root ", BRIGHT_WHITE, RED),
@@ -423,7 +406,10 @@ pub(super) fn sudo_panel(tools: &DetectedTools) -> Panel {
     ]));
     lines.push(Line::from(vec![
         s("root:", WHITE),
-        s("$6$rAnDoMsAlT$xK9y2z...hashed_password...:19234:0:99999:7:::", BRIGHT_BLACK),
+        s(
+            "$6$rAnDoMsAlT$xK9y2z...hashed_password...:19234:0:99999:7:::",
+            BRIGHT_BLACK,
+        ),
     ]));
     lines.push(Line::from(vec![
         s("daemon:", WHITE),
@@ -431,7 +417,10 @@ pub(super) fn sudo_panel(tools: &DetectedTools) -> Panel {
     ]));
     lines.push(Line::from(vec![
         s(&format!("{user}:"), WHITE),
-        s("$6$aNoThErSaLt$mN3p4q...hashed_password...:19456:0:99999:7:::", BRIGHT_BLACK),
+        s(
+            "$6$aNoThErSaLt$mN3p4q...hashed_password...:19456:0:99999:7:::",
+            BRIGHT_BLACK,
+        ),
     ]));
     lines.push(blank());
     lines.push(Line::from(vec![
@@ -442,9 +431,7 @@ pub(super) fn sudo_panel(tools: &DetectedTools) -> Panel {
         sfgbg(" ", YELLOW, BLACK),
         s(" ", WHITE),
     ]));
-    lines.push(Line::from(vec![
-        s("systemctl status nginx", BRIGHT_WHITE),
-    ]));
+    lines.push(Line::from(vec![s("systemctl status nginx", BRIGHT_WHITE)]));
     lines.push(Line::from(vec![
         s("● ", GREEN),
         sb("nginx.service", WHITE),
@@ -481,22 +468,22 @@ pub(super) fn sudo_panel(tools: &DetectedTools) -> Panel {
 
 pub(super) fn color_palette_panel() -> Panel {
     let color_names = [
-        (0, "Black",          "Background, borders, shadows"),
-        (1, "Red",            "Errors, deletions, failures"),
-        (2, "Green",          "Success, additions, running"),
-        (3, "Yellow",         "Warnings, modified, pending"),
-        (4, "Blue",           "Info, directories, links"),
-        (5, "Magenta",        "Special, tags, decorators"),
-        (6, "Cyan",           "Types, constants, paths"),
-        (7, "White",          "Primary text, foreground"),
-        (8, "Bright Black",   "Comments, disabled, dimmed"),
-        (9, "Bright Red",     "Critical errors, urgent"),
-        (10, "Bright Green",  "Highlights, active items"),
+        (0, "Black", "Background, borders, shadows"),
+        (1, "Red", "Errors, deletions, failures"),
+        (2, "Green", "Success, additions, running"),
+        (3, "Yellow", "Warnings, modified, pending"),
+        (4, "Blue", "Info, directories, links"),
+        (5, "Magenta", "Special, tags, decorators"),
+        (6, "Cyan", "Types, constants, paths"),
+        (7, "White", "Primary text, foreground"),
+        (8, "Bright Black", "Comments, disabled, dimmed"),
+        (9, "Bright Red", "Critical errors, urgent"),
+        (10, "Bright Green", "Highlights, active items"),
         (11, "Bright Yellow", "Alerts, emphasis, search"),
-        (12, "Bright Blue",   "Links, references, info"),
-        (13, "Bright Magenta","Keywords, special syntax"),
-        (14, "Bright Cyan",   "Labels, metadata, hints"),
-        (15, "Bright White",  "Bold text, headings, focus"),
+        (12, "Bright Blue", "Links, references, info"),
+        (13, "Bright Magenta", "Keywords, special syntax"),
+        (14, "Bright Cyan", "Labels, metadata, hints"),
+        (15, "Bright White", "Bold text, headings, focus"),
     ];
 
     let mut lines = Vec::new();
