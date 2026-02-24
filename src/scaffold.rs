@@ -308,10 +308,28 @@ fn init_git_repo(dir: &Path) -> Result<()> {
     Ok(())
 }
 
-pub fn setup() -> Result<(TempDir, DetectedTools)> {
+pub fn offline_tools() -> DetectedTools {
+    let specs = project_specs();
+    let prompts = specs
+        .iter()
+        .map(|spec| (spec.name.to_string(), fallback_prompt(spec.dir_name)))
+        .collect();
+
+    DetectedTools {
+        prompt_engine: PromptEngine::Fallback,
+        prompts,
+    }
+}
+
+pub fn setup(offline: bool) -> Result<(TempDir, DetectedTools)> {
     let scaffold_dir = tempfile::Builder::new()
         .prefix("diorama-")
         .tempdir()?;
+
+    if offline {
+        let tools = offline_tools();
+        return Ok((scaffold_dir, tools));
+    }
 
     let engine = detect_prompt_engine();
     let specs = project_specs();

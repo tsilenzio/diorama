@@ -26,14 +26,19 @@ pub struct App {
 }
 
 impl App {
-    pub fn new() -> color_eyre::Result<Self> {
-        let (scaffold_dir, tools) = scaffold::setup()?;
+    pub fn new(offline: bool, panel_index: Option<usize>) -> color_eyre::Result<Self> {
+        let (scaffold_dir, tools) = scaffold::setup(offline)?;
         let panels = panels::build_all(&tools);
 
+        let (mode, selected) = match panel_index {
+            Some(i) => (ViewMode::FullScreen, i),
+            None => (ViewMode::Grid, 0),
+        };
+
         Ok(Self {
-            mode: ViewMode::Grid,
+            mode,
             panels,
-            selected: 0,
+            selected,
             scroll_offset: 0,
             fullscreen_scroll: 0,
             confirm_quit: None,

@@ -136,6 +136,11 @@ pub fn build_all(tools: &DetectedTools) -> Vec<Panel> {
     ]
 }
 
+pub fn find_panel_index(panels: &[Panel], query: &str) -> Option<usize> {
+    let q = query.to_lowercase();
+    panels.iter().position(|p| p.title.to_lowercase().contains(&q))
+}
+
 pub(crate) fn prompt_lines(tools: &DetectedTools, lang: &str) -> Vec<Line<'static>> {
     tools
         .prompts
@@ -143,4 +148,56 @@ pub(crate) fn prompt_lines(tools: &DetectedTools, lang: &str) -> Vec<Line<'stati
         .find(|(name, _)| name == lang)
         .map(|(_, text)| text.lines.clone())
         .unwrap_or_else(|| vec![Line::from(s("$ ", WHITE))])
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+    use crate::scaffold;
+
+    fn test_panels() -> Vec<Panel> {
+        let tools = scaffold::offline_tools();
+        build_all(&tools)
+    }
+
+    #[test]
+    fn find_panel_exact() {
+        let panels = test_panels();
+        let idx = find_panel_index(&panels, "Rust").unwrap();
+        assert_eq!(panels[idx].title, "Rust");
+    }
+
+    #[test]
+    fn find_panel_case_insensitive() {
+        let panels = test_panels();
+        let idx = find_panel_index(&panels, "RUST").unwrap();
+        assert_eq!(panels[idx].title, "Rust");
+    }
+
+    #[test]
+    fn find_panel_substring() {
+        let panels = test_panels();
+        let idx = find_panel_index(&panels, "log").unwrap();
+        assert_eq!(panels[idx].title, "Git Log");
+    }
+
+    #[test]
+    fn find_panel_no_match() {
+        let panels = test_panels();
+        assert!(find_panel_index(&panels, "nope").is_none());
+    }
+
+    #[test]
+    fn find_panel_returns_first_match() {
+        let panels = test_panels();
+        // "python" matches both "Python" and "Python REPL", should return first
+        let idx = find_panel_index(&panels, "python").unwrap();
+        assert_eq!(panels[idx].title, "Python");
+    }
+
+    #[test]
+    fn panel_count() {
+        let panels = test_panels();
+        assert_eq!(panels.len(), 24);
+    }
 }

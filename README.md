@@ -19,8 +19,17 @@ cargo install diorama
 ## Usage
 
 ```
-diorama
+diorama                # launch the TUI
+diorama --list         # print available panels and exit
+diorama -p rust        # jump straight to the Rust panel
+diorama --offline      # skip tool detection, use fallback prompts
 ```
+
+| Flag | Short | Description |
+|------|-------|-------------|
+| `--panel <name>` | `-p` | Jump to a panel by name (case-insensitive substring) |
+| `--offline` | | Skip tool detection for faster startup |
+| `--list` | `-l` | List available panels and exit |
 
 ## Controls
 
