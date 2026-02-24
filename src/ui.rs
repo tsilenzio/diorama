@@ -41,7 +41,7 @@ fn draw_grid(f: &mut Frame, app: &App) {
     let cols = columns_for_width(grid_area.width);
 
     let panel_count = app.panels.len();
-    let rows = (panel_count + cols - 1) / cols;
+    let rows = panel_count.div_ceil(cols);
     let panel_height = PANEL_HEIGHT;
     let total_height = rows as u16 * panel_height;
     let max_scroll = total_height.saturating_sub(grid_area.height);
@@ -104,8 +104,7 @@ fn draw_grid(f: &mut Frame, app: &App) {
                 let y = rect.y;
                 let x_end = rect.x + rect.width;
 
-                let (mut x, _) =
-                    buf.set_stringn(rect.x, y, "└", 1, border_style);
+                let (mut x, _) = buf.set_stringn(rect.x, y, "└", 1, border_style);
 
                 let icon_str = format!(" {} ", panel.icon);
                 let max_w = x_end.saturating_sub(x + 1) as usize;
@@ -138,14 +137,8 @@ fn draw_grid(f: &mut Frame, app: &App) {
                     .borders(borders)
                     .border_style(border_style)
                     .title(Line::from(vec![
-                        Span::styled(
-                            format!(" {} ", panel.icon),
-                            border_style,
-                        ),
-                        Span::styled(
-                            format!("{} ", panel.title),
-                            title_style,
-                        ),
+                        Span::styled(format!(" {} ", panel.icon), border_style),
+                        Span::styled(format!("{} ", panel.title), title_style),
                     ]));
 
                 // When top is clipped, scroll past the hidden content.
@@ -164,14 +157,12 @@ fn draw_grid(f: &mut Frame, app: &App) {
 
     // Status bar at bottom
     let status_line = if app.confirm_quit.is_some_and(|t| t.elapsed().as_secs() < 2) {
-        Line::from(vec![
-            Span::styled(
-                " Press Esc again to quit ",
-                Style::default()
-                    .fg(BRIGHT_WHITE)
-                    .add_modifier(Modifier::BOLD),
-            ),
-        ])
+        Line::from(vec![Span::styled(
+            " Press Esc again to quit ",
+            Style::default()
+                .fg(BRIGHT_WHITE)
+                .add_modifier(Modifier::BOLD),
+        )])
     } else {
         Line::from(vec![Span::styled(
             " Tab: fullscreen │ ↑↓/jk: scroll │ PgUp/PgDn: page │ Home/End: jump │ q/Esc: quit ",
@@ -236,8 +227,7 @@ fn draw_fullscreen(f: &mut Frame, app: &App) {
         let pct = if content_lines <= inner_h {
             100
         } else {
-            ((app.fullscreen_scroll as u32 * 100)
-                / (content_lines.saturating_sub(inner_h)) as u32)
+            ((app.fullscreen_scroll as u32 * 100) / (content_lines.saturating_sub(inner_h)) as u32)
                 .min(100)
         };
         format!(" {}% ", pct)

@@ -72,17 +72,15 @@ impl App {
                 }
             }
 
-            KeyCode::Tab | KeyCode::Enter => {
-                match self.mode {
-                    ViewMode::Grid => {
-                        self.mode = ViewMode::FullScreen;
-                        self.fullscreen_scroll = 0;
-                    }
-                    ViewMode::FullScreen => {
-                        self.mode = ViewMode::Grid;
-                    }
+            KeyCode::Tab | KeyCode::Enter => match self.mode {
+                ViewMode::Grid => {
+                    self.mode = ViewMode::FullScreen;
+                    self.fullscreen_scroll = 0;
                 }
-            }
+                ViewMode::FullScreen => {
+                    self.mode = ViewMode::Grid;
+                }
+            },
 
             // Panel cycling in fullscreen
             KeyCode::Right | KeyCode::Char('l') => {
@@ -133,8 +131,7 @@ impl App {
                 }
             }
             KeyCode::PageUp | KeyCode::Char('u')
-                if key.code == KeyCode::PageUp
-                    || key.modifiers.contains(KeyModifiers::CONTROL) =>
+                if key.code == KeyCode::PageUp || key.modifiers.contains(KeyModifiers::CONTROL) =>
             {
                 if self.mode == ViewMode::Grid {
                     let page = self.page_size();
@@ -188,7 +185,7 @@ impl App {
         let grid_h = term_h.saturating_sub(1);
 
         let cols = columns_for_width(term_w);
-        let rows = (self.panels.len() + cols - 1) / cols;
+        let rows = self.panels.len().div_ceil(cols);
         let total_height = rows as u16 * PANEL_HEIGHT;
         let max_scroll = total_height.saturating_sub(grid_h);
 
