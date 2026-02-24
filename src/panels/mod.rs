@@ -36,17 +36,11 @@ pub(crate) fn s(text: &str, fg: Color) -> Span<'static> {
 }
 
 pub(crate) fn sb(text: &str, fg: Color) -> Span<'static> {
-    Span::styled(
-        text.to_string(),
-        Style::default().fg(fg).add_modifier(BOLD),
-    )
+    Span::styled(text.to_string(), Style::default().fg(fg).add_modifier(BOLD))
 }
 
 pub(crate) fn sd(text: &str, fg: Color) -> Span<'static> {
-    Span::styled(
-        text.to_string(),
-        Style::default().fg(fg).add_modifier(DIM),
-    )
+    Span::styled(text.to_string(), Style::default().fg(fg).add_modifier(DIM))
 }
 
 pub(crate) fn si(text: &str, fg: Color) -> Span<'static> {
@@ -138,7 +132,9 @@ pub fn build_all(tools: &DetectedTools) -> Vec<Panel> {
 
 pub fn find_panel_index(panels: &[Panel], query: &str) -> Option<usize> {
     let q = query.to_lowercase();
-    panels.iter().position(|p| p.title.to_lowercase().contains(&q))
+    panels
+        .iter()
+        .position(|p| p.title.to_lowercase().contains(&q))
 }
 
 pub(crate) fn prompt_lines(tools: &DetectedTools, lang: &str) -> Vec<Line<'static>> {

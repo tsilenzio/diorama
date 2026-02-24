@@ -183,10 +183,7 @@ fn capture_prompt(engine: &PromptEngine, dir: &Path, width: u16) -> Option<Vec<u
             let output = Command::new("zsh")
                 .arg("-i")
                 .arg("-c")
-                .arg(format!(
-                    "cd {} && print -P \"$PS1\"",
-                    dir.display()
-                ))
+                .arg(format!("cd {} && print -P \"$PS1\"", dir.display()))
                 .stderr(std::process::Stdio::null())
                 .output()
                 .ok()?;
@@ -292,10 +289,15 @@ fn init_git_repo(dir: &Path) -> Result<()> {
 
     Command::new("git")
         .args([
-            "-c", "user.name=Dev",
-            "-c", "user.email=dev@example.com",
-            "-c", "commit.gpgsign=false",
-            "commit", "-m", "initial commit",
+            "-c",
+            "user.name=Dev",
+            "-c",
+            "user.email=dev@example.com",
+            "-c",
+            "commit.gpgsign=false",
+            "commit",
+            "-m",
+            "initial commit",
         ])
         .current_dir(dir)
         .stdout(std::process::Stdio::null())
@@ -322,9 +324,7 @@ pub fn offline_tools() -> DetectedTools {
 }
 
 pub fn setup(offline: bool) -> Result<(TempDir, DetectedTools)> {
-    let scaffold_dir = tempfile::Builder::new()
-        .prefix("diorama-")
-        .tempdir()?;
+    let scaffold_dir = tempfile::Builder::new().prefix("diorama-").tempdir()?;
 
     if offline {
         let tools = offline_tools();
@@ -351,10 +351,9 @@ pub fn setup(offline: bool) -> Result<(TempDir, DetectedTools)> {
 
         init_git_repo(&project_dir)?;
 
-        let prompt_text =
-            capture_prompt(&engine, &project_dir, term_width)
-                .map(|bytes| ansi_bytes_to_text(&bytes))
-                .unwrap_or_else(|| fallback_prompt(spec.dir_name));
+        let prompt_text = capture_prompt(&engine, &project_dir, term_width)
+            .map(|bytes| ansi_bytes_to_text(&bytes))
+            .unwrap_or_else(|| fallback_prompt(spec.dir_name));
 
         prompts.push((spec.name.to_string(), prompt_text));
     }
