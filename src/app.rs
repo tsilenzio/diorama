@@ -83,20 +83,20 @@ impl App {
             },
 
             // Panel cycling in fullscreen
-            KeyCode::Right | KeyCode::Char('l') => {
-                if self.mode == ViewMode::FullScreen && !self.panels.is_empty() {
-                    self.selected = (self.selected + 1) % self.panels.len();
-                    self.fullscreen_scroll = 0;
-                }
+            KeyCode::Right | KeyCode::Char('l')
+                if self.mode == ViewMode::FullScreen && !self.panels.is_empty() =>
+            {
+                self.selected = (self.selected + 1) % self.panels.len();
+                self.fullscreen_scroll = 0;
             }
-            KeyCode::Left | KeyCode::Char('h') => {
-                if self.mode == ViewMode::FullScreen && !self.panels.is_empty() {
-                    self.selected = self
-                        .selected
-                        .checked_sub(1)
-                        .unwrap_or(self.panels.len() - 1);
-                    self.fullscreen_scroll = 0;
-                }
+            KeyCode::Left | KeyCode::Char('h')
+                if self.mode == ViewMode::FullScreen && !self.panels.is_empty() =>
+            {
+                self.selected = self
+                    .selected
+                    .checked_sub(1)
+                    .unwrap_or(self.panels.len() - 1);
+                self.fullscreen_scroll = 0;
             }
 
             // Scrolling
