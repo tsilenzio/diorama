@@ -2,6 +2,13 @@
 name = "diorama"
 version = "0.1.0"
 edition = "2021"
+description = "Preview terminal color themes with realistic scenarios"
+repository = "https://github.com/tsilenzio/diorama"
+license = "MIT"
+readme = "README.md"
+keywords = ["terminal", "tui", "theme", "ansi", "color-scheme"]
+categories = ["command-line-utilities"]
+exclude = [".github/", "samples/", "scripts/"]
 
 [dependencies]
 ratatui = "0.29"
