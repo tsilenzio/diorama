@@ -1,7 +1,7 @@
 [package]
 name = "diorama"
 version = "0.1.0"
-edition = "2021"
+edition = "2024"
 description = "Preview terminal color themes with realistic scenarios"
 repository = "https://github.com/tsilenzio/diorama"
 license = "MIT"
