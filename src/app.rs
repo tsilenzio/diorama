@@ -5,7 +5,7 @@ use tempfile::TempDir;
 
 use crate::panels::{self, Panel};
 use crate::scaffold::{self, DetectedTools};
-use crate::ui::{columns_for_width, PANEL_HEIGHT};
+use crate::ui::{PANEL_HEIGHT, columns_for_width};
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
 pub enum ViewMode {

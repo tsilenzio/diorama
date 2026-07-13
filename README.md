@@ -52,6 +52,20 @@ diorama --offline      # skip tool detection, use fallback prompts
 - **Interactive** -- Python REPL, Node REPL, sudo/root prompt contrast
 - **Color palette** -- all 16 ANSI colors with swatches
 
+## Development
+
+```
+mise install      # rust, task, lefthook, cocogitto
+lefthook install  # git hooks
+task              # list tasks
+task lint         # rustfmt check + clippy
+task test
+task build        # release binary
+```
+
+CI runs rustfmt, clippy, and the tests on every push, and commit messages and
+branch names get checked against conventional-commit rules on every PR.
+
 ## License
 
 MIT

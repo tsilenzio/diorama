@@ -35,26 +35,44 @@ fn project_specs() -> Vec<ProjectSpec> {
             name: "Python",
             dir_name: "my-python-app",
             files: vec![
-                ("pyproject.toml", "[project]\nname = \"my-python-app\"\nversion = \"0.1.0\"\nrequires-python = \">=3.12\"\n\n[build-system]\nrequires = [\"hatchling\"]\nbuild-backend = \"hatchling.build\"\n"),
+                (
+                    "pyproject.toml",
+                    "[project]\nname = \"my-python-app\"\nversion = \"0.1.0\"\nrequires-python = \">=3.12\"\n\n[build-system]\nrequires = [\"hatchling\"]\nbuild-backend = \"hatchling.build\"\n",
+                ),
                 (".python-version", "3.12.0\n"),
-                ("src/main.py", "def main():\n    print(\"Hello, world!\")\n\nif __name__ == \"__main__\":\n    main()\n"),
+                (
+                    "src/main.py",
+                    "def main():\n    print(\"Hello, world!\")\n\nif __name__ == \"__main__\":\n    main()\n",
+                ),
             ],
         },
         ProjectSpec {
             name: "Node.js",
             dir_name: "my-node-app",
             files: vec![
-                ("package.json", "{\n  \"name\": \"my-node-app\",\n  \"version\": \"1.0.0\",\n  \"type\": \"module\",\n  \"scripts\": {\n    \"test\": \"jest\"\n  }\n}\n"),
+                (
+                    "package.json",
+                    "{\n  \"name\": \"my-node-app\",\n  \"version\": \"1.0.0\",\n  \"type\": \"module\",\n  \"scripts\": {\n    \"test\": \"jest\"\n  }\n}\n",
+                ),
                 ("node_modules/.package-lock.json", "{}\n"),
-                ("src/index.ts", "export function greet(name: string): string {\n  return `Hello, ${name}!`;\n}\n"),
+                (
+                    "src/index.ts",
+                    "export function greet(name: string): string {\n  return `Hello, ${name}!`;\n}\n",
+                ),
             ],
         },
         ProjectSpec {
             name: "Rust",
             dir_name: "my-rust-app",
             files: vec![
-                ("Cargo.toml", "[package]\nname = \"my-rust-app\"\nversion = \"0.1.0\"\nedition = \"2021\"\n"),
-                ("src/main.rs", "fn main() {\n    println!(\"Hello, world!\");\n}\n"),
+                (
+                    "Cargo.toml",
+                    "[package]\nname = \"my-rust-app\"\nversion = \"0.1.0\"\nedition = \"2021\"\n",
+                ),
+                (
+                    "src/main.rs",
+                    "fn main() {\n    println!(\"Hello, world!\");\n}\n",
+                ),
             ],
         },
         ProjectSpec {
@@ -62,38 +80,62 @@ fn project_specs() -> Vec<ProjectSpec> {
             dir_name: "my-go-app",
             files: vec![
                 ("go.mod", "module github.com/user/my-go-app\n\ngo 1.22\n"),
-                ("main.go", "package main\n\nimport \"fmt\"\n\nfunc main() {\n\tfmt.Println(\"Hello, world!\")\n}\n"),
+                (
+                    "main.go",
+                    "package main\n\nimport \"fmt\"\n\nfunc main() {\n\tfmt.Println(\"Hello, world!\")\n}\n",
+                ),
             ],
         },
         ProjectSpec {
             name: "C/C++",
             dir_name: "my-cpp-app",
             files: vec![
-                ("CMakeLists.txt", "cmake_minimum_required(VERSION 3.20)\nproject(my-cpp-app LANGUAGES CXX)\nadd_executable(app src/main.cpp)\n"),
-                ("src/main.cpp", "#include <iostream>\n\nint main() {\n    std::cout << \"Hello, world!\" << std::endl;\n    return 0;\n}\n"),
+                (
+                    "CMakeLists.txt",
+                    "cmake_minimum_required(VERSION 3.20)\nproject(my-cpp-app LANGUAGES CXX)\nadd_executable(app src/main.cpp)\n",
+                ),
+                (
+                    "src/main.cpp",
+                    "#include <iostream>\n\nint main() {\n    std::cout << \"Hello, world!\" << std::endl;\n    return 0;\n}\n",
+                ),
             ],
         },
         ProjectSpec {
             name: "Zig",
             dir_name: "my-zig-app",
             files: vec![
-                ("build.zig", "const std = @import(\"std\");\n\npub fn build(b: *std.Build) void {\n    const exe = b.addExecutable(.{\n        .name = \"my-zig-app\",\n        .root_source_file = b.path(\"src/main.zig\"),\n        .target = b.standardTargetOptions(.{}),\n    });\n    b.installArtifact(exe);\n}\n"),
-                ("src/main.zig", "const std = @import(\"std\");\n\npub fn main() !void {\n    const stdout = std.io.getStdOut().writer();\n    try stdout.print(\"Hello, world!\\n\", .{});\n}\n"),
+                (
+                    "build.zig",
+                    "const std = @import(\"std\");\n\npub fn build(b: *std.Build) void {\n    const exe = b.addExecutable(.{\n        .name = \"my-zig-app\",\n        .root_source_file = b.path(\"src/main.zig\"),\n        .target = b.standardTargetOptions(.{}),\n    });\n    b.installArtifact(exe);\n}\n",
+                ),
+                (
+                    "src/main.zig",
+                    "const std = @import(\"std\");\n\npub fn main() !void {\n    const stdout = std.io.getStdOut().writer();\n    try stdout.print(\"Hello, world!\\n\", .{});\n}\n",
+                ),
             ],
         },
         ProjectSpec {
             name: "Java",
             dir_name: "my-java-app",
             files: vec![
-                ("build.gradle", "plugins {\n    id 'application'\n}\n\napplication {\n    mainClass = 'App'\n}\n"),
-                ("src/main/java/App.java", "public class App {\n    public static void main(String[] args) {\n        System.out.println(\"Hello, world!\");\n    }\n}\n"),
+                (
+                    "build.gradle",
+                    "plugins {\n    id 'application'\n}\n\napplication {\n    mainClass = 'App'\n}\n",
+                ),
+                (
+                    "src/main/java/App.java",
+                    "public class App {\n    public static void main(String[] args) {\n        System.out.println(\"Hello, world!\");\n    }\n}\n",
+                ),
             ],
         },
         ProjectSpec {
             name: "C#",
             dir_name: "my-csharp-app",
             files: vec![
-                ("App.csproj", "<Project Sdk=\"Microsoft.NET.Sdk\">\n  <PropertyGroup>\n    <OutputType>Exe</OutputType>\n    <TargetFramework>net8.0</TargetFramework>\n  </PropertyGroup>\n</Project>\n"),
+                (
+                    "App.csproj",
+                    "<Project Sdk=\"Microsoft.NET.Sdk\">\n  <PropertyGroup>\n    <OutputType>Exe</OutputType>\n    <TargetFramework>net8.0</TargetFramework>\n  </PropertyGroup>\n</Project>\n",
+                ),
                 ("Program.cs", "Console.WriteLine(\"Hello, World!\");\n"),
             ],
         },
@@ -101,8 +143,14 @@ fn project_specs() -> Vec<ProjectSpec> {
             name: "Ruby",
             dir_name: "my-ruby-app",
             files: vec![
-                ("Gemfile", "source \"https://rubygems.org\"\n\ngem \"rspec\"\n"),
-                ("lib/app.rb", "class App\n  def greet(name)\n    \"Hello, #{name}!\"\n  end\nend\n"),
+                (
+                    "Gemfile",
+                    "source \"https://rubygems.org\"\n\ngem \"rspec\"\n",
+                ),
+                (
+                    "lib/app.rb",
+                    "class App\n  def greet(name)\n    \"Hello, #{name}!\"\n  end\nend\n",
+                ),
             ],
         },
     ]

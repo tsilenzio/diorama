@@ -1,0 +1,5 @@
+[tools]
+rust = "stable"
+task = "latest"
+lefthook = "latest"
+cocogitto = "latest"

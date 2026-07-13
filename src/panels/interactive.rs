@@ -9,7 +9,10 @@ pub(super) fn python_repl_panel() -> Panel {
         Line::from(vec![
             s("Python ", WHITE),
             s("3.12.0", CYAN),
-            s(" (main, Oct  2 2024, 12:00:00) [Clang 15.0.0 (clang-1500.3.9.4)]", WHITE),
+            s(
+                " (main, Oct  2 2024, 12:00:00) [Clang 15.0.0 (clang-1500.3.9.4)]",
+                WHITE,
+            ),
         ]),
         Line::from(vec![
             s("Type ", WHITE),
@@ -41,9 +44,7 @@ pub(super) fn python_repl_panel() -> Panel {
             s("import ", BLUE),
             s("Counter", WHITE),
         ]),
-        Line::from(vec![
-            sb(">>> ", GREEN),
-        ]),
+        Line::from(vec![sb(">>> ", GREEN)]),
         Line::from(vec![
             sb(">>> ", GREEN),
             s("data = {", WHITE),
@@ -68,7 +69,10 @@ pub(super) fn python_repl_panel() -> Panel {
             s("True", YELLOW),
             s(")", WHITE),
         ]),
-        Line::from(s("'{\\n  \"count\": 3,\\n  \"users\": [\\n    \"alice\",\\n    \"bob\",\\n    \"charlie\"\\n  ]\\n}'", GREEN)),
+        Line::from(s(
+            "'{\\n  \"count\": 3,\\n  \"users\": [\\n    \"alice\",\\n    \"bob\",\\n    \"charlie\"\\n  ]\\n}'",
+            GREEN,
+        )),
         Line::from(vec![
             sb(">>> ", GREEN),
             s("len", CYAN),
@@ -92,12 +96,8 @@ pub(super) fn python_repl_panel() -> Panel {
             s("3", MAGENTA),
             s("]", WHITE),
         ]),
-        Line::from(vec![
-            s("['ALICE', 'CHARLIE']", WHITE),
-        ]),
-        Line::from(vec![
-            sb(">>> ", GREEN),
-        ]),
+        Line::from(vec![s("['ALICE', 'CHARLIE']", WHITE)]),
+        Line::from(vec![sb(">>> ", GREEN)]),
         Line::from(vec![
             sb(">>> ", GREEN),
             s("Counter(", WHITE),
@@ -106,12 +106,8 @@ pub(super) fn python_repl_panel() -> Panel {
             s("3", MAGENTA),
             s(")", WHITE),
         ]),
-        Line::from(vec![
-            s("[('s', 4), ('i', 4), ('p', 2)]", WHITE),
-        ]),
-        Line::from(vec![
-            sb(">>> ", GREEN),
-        ]),
+        Line::from(vec![s("[('s', 4), ('i', 4), ('p', 2)]", WHITE)]),
+        Line::from(vec![sb(">>> ", GREEN)]),
         Line::from(vec![
             sb(">>> ", GREEN),
             s("now = datetime.now(timezone.utc)", WHITE),
@@ -121,21 +117,18 @@ pub(super) fn python_repl_panel() -> Panel {
             s("f", GREEN),
             s("\"Current time: {now.isoformat()}\"", GREEN),
         ]),
-        Line::from(vec![
-            s("'Current time: 2025-02-23T10:15:32.456789+00:00'", GREEN),
-        ]),
-        Line::from(vec![
-            sb(">>> ", GREEN),
-        ]),
+        Line::from(vec![s(
+            "'Current time: 2025-02-23T10:15:32.456789+00:00'",
+            GREEN,
+        )]),
+        Line::from(vec![sb(">>> ", GREEN)]),
         Line::from(vec![
             sb(">>> ", GREEN),
             s("1", MAGENTA),
             s(" / ", WHITE),
             s("0", MAGENTA),
         ]),
-        Line::from(vec![
-            s("Traceback (most recent call last):", RED),
-        ]),
+        Line::from(vec![s("Traceback (most recent call last):", RED)]),
         Line::from(vec![
             s("  File ", WHITE),
             s("\"<stdin>\"", GREEN),
@@ -148,9 +141,7 @@ pub(super) fn python_repl_panel() -> Panel {
             sb("ZeroDivisionError", RED),
             s(": division by zero", WHITE),
         ]),
-        Line::from(vec![
-            sb(">>> ", GREEN),
-        ]),
+        Line::from(vec![sb(">>> ", GREEN)]),
     ];
 
     Panel {

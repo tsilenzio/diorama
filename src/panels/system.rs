@@ -14,7 +14,10 @@ pub(super) fn docker_panel() -> Panel {
     let lines = vec![
         Line::from(vec![
             s("$ ", WHITE),
-            s("docker ps -a --format \"table {{.ID}}\\t{{.Image}}\\t{{.Command}}\\t{{.Status}}\\t{{.Ports}}\\t{{.Names}}\"", BRIGHT_WHITE),
+            s(
+                "docker ps -a --format \"table {{.ID}}\\t{{.Image}}\\t{{.Command}}\\t{{.Status}}\\t{{.Ports}}\\t{{.Names}}\"",
+                BRIGHT_WHITE,
+            ),
         ]),
         blank(),
         Line::from(vec![

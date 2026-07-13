@@ -9,9 +9,9 @@ use std::process;
 use clap::Parser;
 use color_eyre::Result;
 use crossterm::{
-    event::{self, Event, KeyEventKind},
-    terminal::{disable_raw_mode, enable_raw_mode, EnterAlternateScreen, LeaveAlternateScreen},
     ExecutableCommand,
+    event::{self, Event, KeyEventKind},
+    terminal::{EnterAlternateScreen, LeaveAlternateScreen, disable_raw_mode, enable_raw_mode},
 };
 use ratatui::prelude::*;
 
@@ -71,10 +71,11 @@ fn main() -> Result<()> {
     loop {
         terminal.draw(|f| ui::draw(f, &app))?;
 
-        if let Event::Key(key) = event::read()? {
-            if key.kind == KeyEventKind::Press && app.handle_key(key) {
-                break;
-            }
+        if let Event::Key(key) = event::read()?
+            && key.kind == KeyEventKind::Press
+            && app.handle_key(key)
+        {
+            break;
         }
     }
 

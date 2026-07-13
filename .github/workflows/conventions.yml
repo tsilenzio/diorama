@@ -14,8 +14,16 @@ jobs:
     name: Commit Messages
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
-      - uses: wagoid/commitlint-github-action@v6
+      - uses: actions/checkout@v5
+        with:
+          fetch-depth: 0
+          fetch-tags: true
+      - name: Install cocogitto
+        run: cargo install cocogitto --locked
+      # Pre-v0.1.0 history predates conventional commits, so only check
+      # commits made since the latest release tag.
+      - name: Check commits
+        run: cog check --from-latest-tag
 
   branch-name:
     name: Branch Name
