@@ -4,6 +4,10 @@ Preview terminal color themes with realistic scenarios. Shows shell prompts, bui
 
 Useful for testing and designing terminal color schemes. Instead of staring at color swatches, see how your 16 colors actually play together across real-world terminal output.
 
+![diorama demo](demo.gif)
+
+_Recorded under Catppuccin Mocha. Since diorama draws only in ANSI 0-15, the demo looks like whatever theme it runs under._
+
 ## Install
 
 ```
@@ -55,7 +59,7 @@ diorama --offline      # skip tool detection, use fallback prompts
 ## Development
 
 ```
-mise install      # rust, task, lefthook, cocogitto
+mise install      # rust, task, lefthook, cocogitto, vhs
 lefthook install  # git hooks
 task              # list tasks
 task lint         # rustfmt check + clippy
@@ -65,6 +69,10 @@ task build        # release binary
 
 CI runs rustfmt, clippy, and the tests on every push, and commit messages and
 branch names get checked against conventional-commit rules on every PR.
+
+The README GIF is rendered from `demo.tape` with [VHS](https://github.com/charmbracelet/vhs).
+Regenerate it with `task demo` (needs `diorama` on PATH plus `ttyd` and `ffmpeg`,
+which VHS shells out to: `brew install ttyd ffmpeg`).
 
 ## License
 

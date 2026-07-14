@@ -78,3 +78,11 @@ tasks:
     cmds:
       - clear
       - task: lint
+
+  demo:
+    desc: Render the README demo GIF (needs diorama on PATH, plus vhs, ttyd, ffmpeg)
+    cmd: vhs demo.tape
+    sources:
+      - demo.tape
+    generates:
+      - demo.gif
