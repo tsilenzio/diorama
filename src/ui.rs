@@ -16,6 +16,17 @@ pub fn columns_for_width(width: u16) -> usize {
 const BRIGHT_BLACK: Color = Color::Indexed(8);
 const BRIGHT_WHITE: Color = Color::Indexed(15);
 
+// Clone only the lines that fall inside the viewport instead of the whole
+// panel, which can run to hundreds of lines, on every frame.
+fn visible_lines(content: &[Line<'static>], offset: u16, height: u16) -> Vec<Line<'static>> {
+    content
+        .iter()
+        .skip(offset as usize)
+        .take(height as usize)
+        .cloned()
+        .collect()
+}
+
 pub fn draw(f: &mut Frame, app: &App) {
     match app.mode {
         ViewMode::Grid => draw_grid(f, app),
@@ -146,9 +157,10 @@ fn draw_grid(f: &mut Frame, app: &App) {
                 // scroll is clip_top - 1.
                 let content_scroll = clip_top.saturating_sub(1);
 
-                let paragraph = Paragraph::new(panel.content.clone())
-                    .block(block)
-                    .scroll((content_scroll, 0));
+                let inner_h = rect.height.saturating_sub(2);
+                let paragraph =
+                    Paragraph::new(visible_lines(&panel.content, content_scroll, inner_h))
+                        .block(block);
 
                 f.render_widget(paragraph, rect);
             }
@@ -211,9 +223,13 @@ fn draw_fullscreen(f: &mut Frame, app: &App) {
             ),
         ]));
 
-    let paragraph = Paragraph::new(panel.content.clone())
-        .block(block)
-        .scroll((app.fullscreen_scroll, 0));
+    let inner_h = main_area.height.saturating_sub(2);
+    let paragraph = Paragraph::new(visible_lines(
+        &panel.content,
+        app.fullscreen_scroll,
+        inner_h,
+    ))
+    .block(block);
 
     f.render_widget(paragraph, main_area);
 

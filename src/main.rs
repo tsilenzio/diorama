@@ -11,7 +11,10 @@ use color_eyre::Result;
 use crossterm::{
     ExecutableCommand,
     event::{self, Event, KeyEventKind},
-    terminal::{EnterAlternateScreen, LeaveAlternateScreen, disable_raw_mode, enable_raw_mode},
+    terminal::{
+        BeginSynchronizedUpdate, EndSynchronizedUpdate, EnterAlternateScreen, LeaveAlternateScreen,
+        disable_raw_mode, enable_raw_mode,
+    },
 };
 use ratatui::prelude::*;
 
@@ -69,7 +72,13 @@ fn main() -> Result<()> {
     let mut app = App::new(cli.offline, panel_index)?;
 
     loop {
+        // Bracket each frame in a synchronized update (DEC mode 2026) so
+        // terminals that support it present the frame atomically. This stops
+        // the blank clear-and-repaint that ratatui does on resize from showing
+        // as a flash on fast terminals like Ghostty.
+        io::stdout().execute(BeginSynchronizedUpdate)?;
         terminal.draw(|f| ui::draw(f, &app))?;
+        io::stdout().execute(EndSynchronizedUpdate)?;
 
         if let Event::Key(key) = event::read()?
             && key.kind == KeyEventKind::Press
