@@ -1,0 +1,30 @@
+]9;4;0;0\]9;4;0;0\]9;4;0;0\[1m[92m   Compiling[0m sample-app v0.1.0 (/private/var/folders/t6/w423hg0j67xgrmncvf9n0d180000gn/T/diorama-capture.XXXXXX.7rD0W0gYQe/rust)
+[1m[96m    Building[0m [                             ] 0/4: sample_app(test), sample-app                                        ]9;4;1;0\[1m[96m    Building[0m [=============>               ] 2/4: sample_app(test), sample-app(bin test)                              ]9;4;1;50\[1m[96m    Building[0m [====================>        ] 3/4: sample-app(bin test)                                                ]9;4;1;75\[K]9;4;0;0\[1m[92m    Finished[0m ]8;;https://doc.rust-lang.org/cargo/reference/profiles.html#default-profiles\`test` profile [unoptimized + debuginfo]]8;;\ target(s) in 0.15s
+]9;4;0;0\[1m[92m     Running[0m unittests src/lib.rs (target/debug/deps/sample_app-853793f4e1db0eb3)
+
+running 7 tests
+test tests::test_add ... [32mok(B[m
+test tests::test_divide ... [32mok(B[m
+test tests::test_add_negative ... [32mok(B[m
+test tests::test_divide_by_zero ... [32mok(B[m
+test tests::test_fibonacci ... [32mok(B[m
+test tests::test_fibonacci_zero ... [32mok(B[m
+test tests::test_serialization_fail ... [31mFAILED(B[m
+
+failures:
+
+---- tests::test_serialization_fail stdout ----
+
+thread 'tests::test_serialization_fail' (147861) panicked at src/lib.rs:56:9:
+assertion `left == right` failed
+  left: 4
+ right: 5
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+
+
+failures:
+    tests::test_serialization_fail
+
+test result: [31mFAILED(B[m. 6 passed; 1 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+[1m[91merror[0m: test failed, to rerun pass `--lib`

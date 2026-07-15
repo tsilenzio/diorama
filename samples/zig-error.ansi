@@ -1,0 +1,4 @@
+[1msrc/bad.zig:5:19: [31merror: [0m[1muse of undeclared identifier 'undefined_var'
+[0m    const y = x + undefined_var;
+                  [32m^~~~~~~~~~~~~
+[0m

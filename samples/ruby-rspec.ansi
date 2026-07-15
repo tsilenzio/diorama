@@ -1,0 +1,30 @@
+
+Calculator
+  #add
+[32m    adds two numbers[0m
+[32m    handles negatives[0m
+  #divide
+[32m    divides two numbers[0m
+[32m    raises on zero[0m
+  #fibonacci
+[32m    computes fib(10)[0m
+[31m    fails intentionally (FAILED - 1)[0m
+
+Failures:
+
+  1) Calculator#fibonacci fails intentionally
+     [31mFailure/Error: expect(calc.add(2, 2)).to eq(5)[0m
+     [31m[0m
+     [31m  expected: 5[0m
+     [31m       got: 4[0m
+     [31m[0m
+     [31m  (compared using ==)[0m
+     [36m# ./spec/calculator_spec.rb:32:in 'block (3 levels) in <top (required)>'[0m
+
+Finished in 0.00344 seconds (files took 0.04494 seconds to load)
+[31m6 examples, 1 failure[0m
+
+Failed examples:
+
+[31mrspec ./spec/calculator_spec.rb:31[0m [36m# Calculator#fibonacci fails intentionally[0m
+

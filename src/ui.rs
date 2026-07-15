@@ -32,6 +32,24 @@ pub fn draw(f: &mut Frame, app: &App) {
         ViewMode::Grid => draw_grid(f, app),
         ViewMode::FullScreen => draw_fullscreen(f, app),
     }
+    if app.no_color {
+        strip_colors(f);
+    }
+}
+
+// Reset every cell's colors after rendering so NO_COLOR (or --no-color) drops
+// all color while keeping bold/dim/etc. This runs over the whole frame so it
+// catches panel content, borders, and the status bar in one pass.
+fn strip_colors(f: &mut Frame) {
+    let area = f.area();
+    let buf = f.buffer_mut();
+    for y in area.top()..area.bottom() {
+        for x in area.left()..area.right() {
+            let cell = &mut buf[(x, y)];
+            cell.set_fg(Color::Reset);
+            cell.set_bg(Color::Reset);
+        }
+    }
 }
 
 fn draw_grid(f: &mut Frame, app: &App) {

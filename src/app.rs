@@ -20,13 +20,18 @@ pub struct App {
     pub scroll_offset: u16,
     pub fullscreen_scroll: u16,
     pub confirm_quit: Option<Instant>,
+    pub no_color: bool,
     #[allow(dead_code)]
     pub tools: DetectedTools,
     pub _scaffold: TempDir,
 }
 
 impl App {
-    pub fn new(offline: bool, panel_index: Option<usize>) -> color_eyre::Result<Self> {
+    pub fn new(
+        offline: bool,
+        no_color: bool,
+        panel_index: Option<usize>,
+    ) -> color_eyre::Result<Self> {
         let (scaffold_dir, tools) = scaffold::setup(offline)?;
         let panels = panels::build_all(&tools);
 
@@ -42,6 +47,7 @@ impl App {
             scroll_offset: 0,
             fullscreen_scroll: 0,
             confirm_quit: None,
+            no_color,
             tools,
             _scaffold: scaffold_dir,
         })

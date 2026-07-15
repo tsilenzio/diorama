@@ -7,6 +7,7 @@ mod devtools;
 mod git;
 mod interactive;
 mod languages;
+mod samples;
 mod system;
 
 pub(crate) const BLACK: Color = Color::Indexed(0);
@@ -103,8 +104,8 @@ pub struct Panel {
 
 pub fn build_all(tools: &DetectedTools) -> Vec<Panel> {
     vec![
-        languages::python_panel(tools),
         languages::node_panel(tools),
+        languages::python_panel(tools),
         languages::rust_panel(tools),
         languages::go_panel(tools),
         languages::cpp_panel(tools),
@@ -113,6 +114,9 @@ pub fn build_all(tools: &DetectedTools) -> Vec<Panel> {
         languages::csharp_panel(tools),
         languages::ruby_panel(tools),
         languages::lua_panel(tools),
+        samples::cpp_real_panel(),
+        samples::ruby_real_panel(),
+        samples::lua_real_panel(),
         git::git_log_panel(),
         git::git_diff_panel(),
         system::docker_panel(),
@@ -194,6 +198,6 @@ mod tests {
     #[test]
     fn panel_count() {
         let panels = test_panels();
-        assert_eq!(panels.len(), 24);
+        assert_eq!(panels.len(), 27);
     }
 }

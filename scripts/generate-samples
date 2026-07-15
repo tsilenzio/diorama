@@ -1,0 +1,723 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+# Activate mise so tools like cmake, gradle, dotnet are on PATH
+eval "$(mise activate bash 2>/dev/null)" 2>/dev/null || true
+eval "$(mise hook-env 2>/dev/null)" 2>/dev/null || true
+
+# Generate real ANSI output from language tools for use as panel content.
+#
+# Requires: python/pytest, node/vitest, rust/cargo, go, zig, cmake/clang,
+#           java/gradle, dotnet, ruby/rspec, lua/busted
+#
+# Usage: ./scripts/generate-samples [--width N]
+#
+# Output lands in samples/ as raw ANSI text files. The Rust binary can
+# embed these at compile time via include_bytes!.
+
+CAPTURE_WIDTH="${CAPTURE_WIDTH:-120}"
+while [[ $# -gt 0 ]]; do
+    case "$1" in
+        --width) CAPTURE_WIDTH="$2"; shift 2 ;;
+        *) echo "unknown arg: $1"; exit 1 ;;
+    esac
+done
+
+SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
+REPO_DIR="$(dirname "$SCRIPT_DIR")"
+SAMPLES_DIR="$REPO_DIR/samples"
+WORK_DIR="$(mktemp -d -t diorama-capture.XXXXXX)"
+
+trap 'rm -rf "$WORK_DIR"' EXIT
+
+mkdir -p "$SAMPLES_DIR"
+
+capture() {
+    local name="$1"
+    local outfile="$SAMPLES_DIR/$name.ansi"
+    shift
+
+    # script -q captures raw terminal output with ANSI codes intact.
+    # Force wide terminal via stty + COLUMNS so output doesn't wrap
+    # prematurely on smaller capture machines.
+    script -q "$outfile" bash -c \
+        "stty cols $CAPTURE_WIDTH 2>/dev/null; export COLUMNS=$CAPTURE_WIDTH; $*" \
+        >/dev/null 2>&1 || true
+
+    # Clean up script artifacts: carriage returns and leading ^D + backspaces
+    sed -i '' -e $'s/\r$//' -e $'1s/^\\^D\b\b//' "$outfile" 2>/dev/null \
+        || sed -i -e $'s/\r$//' -e $'1s/^\\^D\b\b//' "$outfile"
+
+    echo "  captured $name"
+}
+
+check_cmd() {
+    command -v "$1" >/dev/null 2>&1
+}
+
+missing=()
+require() {
+    if ! check_cmd "$1"; then
+        missing+=("$1")
+    fi
+}
+
+require python3
+require cargo
+require go
+require zig
+require cmake
+require java
+require gradle
+require dotnet
+require ruby
+require lua
+require pnpm
+
+if [[ ${#missing[@]} -gt 0 ]]; then
+    echo "missing tools: ${missing[*]}"
+    echo "install via mise or brew before running"
+    exit 1
+fi
+
+echo "generating samples (width=$CAPTURE_WIDTH)"
+echo ""
+
+# ---------- Python / pytest ----------
+
+echo "[python]"
+PYDIR="$WORK_DIR/python"
+mkdir -p "$PYDIR/src" "$PYDIR/tests"
+
+cat > "$PYDIR/src/auth.py" << 'EOF'
+class AuthError(Exception):
+    pass
+
+class AuthService:
+    def __init__(self):
+        self._users = {
+            "alice": {"password": "secret123", "role": "admin"},
+            "bob": {"password": "hunter2", "role": "user"},
+        }
+        self._tokens = {}
+
+    def login(self, username, password):
+        user = self._users.get(username)
+        if not user or user["password"] != password:
+            raise AuthError("invalid credentials")
+        token = f"tok_{username}_{id(self)}"
+        self._tokens[token] = username
+        return token
+
+    def verify(self, token):
+        if token not in self._tokens:
+            raise AuthError("invalid token")
+        return self._tokens[token]
+
+    def to_dict(self):
+        return {"users": list(self._users.keys())}
+EOF
+
+cat > "$PYDIR/tests/test_auth.py" << 'EOF'
+import sys, os
+sys.path.insert(0, os.path.join(os.path.dirname(__file__), '..', 'src'))
+from auth import AuthService, AuthError
+import pytest
+
+class TestLogin:
+    def test_valid_credentials(self):
+        svc = AuthService()
+        token = svc.login("alice", "secret123")
+        assert token.startswith("tok_alice")
+
+    def test_invalid_password(self):
+        svc = AuthService()
+        with pytest.raises(AuthError, match="invalid credentials"):
+            svc.login("alice", "wrong")
+
+    def test_unknown_user(self):
+        svc = AuthService()
+        with pytest.raises(AuthError):
+            svc.login("nobody", "pass")
+
+class TestVerify:
+    def test_valid_token(self):
+        svc = AuthService()
+        token = svc.login("bob", "hunter2")
+        assert svc.verify(token) == "bob"
+
+    def test_invalid_token(self):
+        svc = AuthService()
+        with pytest.raises(AuthError):
+            svc.verify("fake_token")
+
+class TestSerialization:
+    def test_to_dict(self):
+        svc = AuthService()
+        assert svc.to_dict() == {"users": ["alice", "charlie"]}
+
+    def test_user_count(self):
+        svc = AuthService()
+        assert len(svc.to_dict()["users"]) == 2
+EOF
+
+pip install pytest pytest-cov -q 2>/dev/null || uv pip install pytest pytest-cov --system -q 2>/dev/null
+capture "python-pytest" "cd '$PYDIR' && python3 -m pytest tests/ -v --tb=short --color=yes"
+
+# ---------- Rust / cargo ----------
+
+echo "[rust]"
+RSDIR="$WORK_DIR/rust"
+cargo init "$RSDIR" --name sample-app -q 2>/dev/null
+
+cat > "$RSDIR/src/lib.rs" << 'EOF'
+pub fn add(a: i32, b: i32) -> i32 {
+    a + b
+}
+
+pub fn divide(a: f64, b: f64) -> Result<f64, String> {
+    if b == 0.0 {
+        return Err("division by zero".into());
+    }
+    Ok(a / b)
+}
+
+pub fn fibonacci(n: u32) -> u64 {
+    match n {
+        0 => 0,
+        1 => 1,
+        _ => fibonacci(n - 1) + fibonacci(n - 2),
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn test_add() {
+        assert_eq!(add(2, 3), 5);
+    }
+
+    #[test]
+    fn test_add_negative() {
+        assert_eq!(add(-1, 1), 0);
+    }
+
+    #[test]
+    fn test_divide() {
+        assert_eq!(divide(10.0, 2.0).unwrap(), 5.0);
+    }
+
+    #[test]
+    fn test_divide_by_zero() {
+        assert!(divide(1.0, 0.0).is_err());
+    }
+
+    #[test]
+    fn test_fibonacci() {
+        assert_eq!(fibonacci(10), 55);
+    }
+
+    #[test]
+    fn test_fibonacci_zero() {
+        assert_eq!(fibonacci(0), 0);
+    }
+
+    #[test]
+    fn test_serialization_fail() {
+        assert_eq!(add(2, 2), 5);
+    }
+}
+EOF
+
+capture "rust-cargo-test" "cd '$RSDIR' && cargo test --color=always 2>&1"
+
+# ---------- Go ----------
+
+echo "[go]"
+GODIR="$WORK_DIR/go"
+mkdir -p "$GODIR"
+
+cat > "$GODIR/go.mod" << 'EOF'
+module github.com/example/sample-app
+
+go 1.22
+EOF
+
+cat > "$GODIR/main.go" << 'EOF'
+package main
+
+import "fmt"
+
+func Add(a, b int) int { return a + b }
+
+func Divide(a, b float64) (float64, error) {
+	if b == 0 {
+		return 0, fmt.Errorf("division by zero")
+	}
+	return a / b, nil
+}
+
+func main() {
+	fmt.Println("Hello, world!")
+}
+EOF
+
+cat > "$GODIR/main_test.go" << 'EOF'
+package main
+
+import "testing"
+
+func TestAdd(t *testing.T) {
+	if Add(2, 3) != 5 {
+		t.Error("expected 5")
+	}
+}
+
+func TestAddNegative(t *testing.T) {
+	if Add(-1, 1) != 0 {
+		t.Error("expected 0")
+	}
+}
+
+func TestDivide(t *testing.T) {
+	result, err := Divide(10, 2)
+	if err != nil {
+		t.Fatal(err)
+	}
+	if result != 5 {
+		t.Errorf("expected 5, got %f", result)
+	}
+}
+
+func TestDivideByZero(t *testing.T) {
+	_, err := Divide(1, 0)
+	if err == nil {
+		t.Error("expected error")
+	}
+}
+
+func TestFail(t *testing.T) {
+	if Add(2, 2) != 5 {
+		t.Errorf("expected 5 but got %d", Add(2, 2))
+	}
+}
+EOF
+
+# go test produces no color natively; capture for reference
+capture "go-test" "cd '$GODIR' && go test -v ./... 2>&1"
+
+if check_cmd richgo; then
+    capture "go-richgo" "cd '$GODIR' && richgo test -v ./... 2>&1"
+fi
+
+# ---------- Node.js / Vitest ----------
+
+echo "[node]"
+NODEDIR="$WORK_DIR/node"
+mkdir -p "$NODEDIR/src"
+
+cat > "$NODEDIR/package.json" << 'EOF'
+{
+  "name": "sample-app",
+  "version": "1.0.0",
+  "type": "module",
+  "scripts": { "test": "vitest run" },
+  "devDependencies": { "vitest": "latest" }
+}
+EOF
+
+cat > "$NODEDIR/src/math.ts" << 'EOF'
+export function add(a: number, b: number): number {
+  return a + b;
+}
+
+export function divide(a: number, b: number): number {
+  if (b === 0) throw new Error("division by zero");
+  return a / b;
+}
+
+export function fibonacci(n: number): number {
+  if (n <= 1) return n;
+  return fibonacci(n - 1) + fibonacci(n - 2);
+}
+EOF
+
+cat > "$NODEDIR/src/math.test.ts" << 'EOF'
+import { describe, it, expect } from 'vitest';
+import { add, divide, fibonacci } from './math';
+
+describe('add', () => {
+  it('adds two positive numbers', () => {
+    expect(add(2, 3)).toBe(5);
+  });
+  it('adds negative numbers', () => {
+    expect(add(-1, 1)).toBe(0);
+  });
+});
+
+describe('divide', () => {
+  it('divides two numbers', () => {
+    expect(divide(10, 2)).toBe(5);
+  });
+  it('throws on zero', () => {
+    expect(() => divide(1, 0)).toThrow('division by zero');
+  });
+});
+
+describe('fibonacci', () => {
+  it('computes fib(10)', () => {
+    expect(fibonacci(10)).toBe(55);
+  });
+  it('intentional failure', () => {
+    expect(add(2, 2)).toBe(5);
+  });
+});
+EOF
+
+(cd "$NODEDIR" && pnpm install --silent 2>/dev/null)
+capture "node-vitest" "cd '$NODEDIR' && npx vitest run --color 2>&1"
+
+# ---------- Zig ----------
+
+echo "[zig]"
+ZIGDIR="$WORK_DIR/zig"
+mkdir -p "$ZIGDIR/src"
+
+cat > "$ZIGDIR/build.zig" << 'EOF'
+const std = @import("std");
+
+pub fn build(b: *std.Build) void {
+    const exe = b.addExecutable(.{
+        .name = "sample-app",
+        .root_source_file = b.path("src/main.zig"),
+        .target = b.standardTargetOptions(.{}),
+    });
+    b.installArtifact(exe);
+
+    const tests = b.addTest(.{
+        .root_source_file = b.path("src/main.zig"),
+        .target = b.standardTargetOptions(.{}),
+    });
+    const run_tests = b.addRunArtifact(tests);
+    const test_step = b.step("test", "Run unit tests");
+    test_step.dependOn(&run_tests.step);
+}
+EOF
+
+cat > "$ZIGDIR/src/main.zig" << 'EOF'
+const std = @import("std");
+
+pub fn add(a: i32, b: i32) i32 {
+    return a + b;
+}
+
+pub fn divide(a: f64, b: f64) !f64 {
+    if (b == 0.0) return error.DivisionByZero;
+    return a / b;
+}
+
+test "add works" {
+    try std.testing.expectEqual(@as(i32, 5), add(2, 3));
+}
+
+test "divide works" {
+    const result = try divide(10.0, 2.0);
+    try std.testing.expectEqual(@as(f64, 5.0), result);
+}
+
+test "intentional failure" {
+    try std.testing.expectEqual(@as(i32, 5), add(2, 2));
+}
+
+pub fn main() !void {
+    const stdout = std.io.getStdOut().writer();
+    try stdout.print("Hello, world!\n", .{});
+}
+EOF
+
+capture "zig-test" "cd '$ZIGDIR' && zig build test 2>&1"
+
+cat > "$ZIGDIR/src/bad.zig" << 'EOF'
+const std = @import("std");
+
+pub fn main() !void {
+    const x: i32 = "not a number";
+    const y = x + undefined_var;
+    _ = y;
+}
+EOF
+
+capture "zig-error" "cd '$ZIGDIR' && zig build-exe src/bad.zig 2>&1"
+
+# ---------- C++ / CMake ----------
+
+echo "[cpp]"
+CPPDIR="$WORK_DIR/cpp"
+mkdir -p "$CPPDIR/src"
+
+cat > "$CPPDIR/CMakeLists.txt" << 'EOF'
+cmake_minimum_required(VERSION 3.20)
+project(sample-app LANGUAGES CXX)
+set(CMAKE_CXX_STANDARD 20)
+add_executable(app src/main.cpp)
+EOF
+
+cat > "$CPPDIR/src/main.cpp" << 'EOF'
+#include <iostream>
+#include <string>
+#include <vector>
+
+int main() {
+    std::string msg = 42;  // type error
+    std::vector<int> nums = {1, 2, 3};
+    std::cout << nums.at(10) << std::endl;
+    return 0;
+}
+EOF
+
+capture "cpp-cmake-error" "cd '$CPPDIR' && cmake -B build -DCMAKE_COLOR_DIAGNOSTICS=ON 2>&1 && cmake --build build 2>&1"
+
+# ---------- Java / Gradle ----------
+
+echo "[java]"
+JAVADIR="$WORK_DIR/java"
+mkdir -p "$JAVADIR/src/main/java" "$JAVADIR/src/test/java"
+
+cat > "$JAVADIR/build.gradle" << 'EOF'
+plugins {
+    id 'java'
+}
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    testImplementation 'org.junit.jupiter:junit-jupiter:5.11.0'
+}
+
+test {
+    useJUnitPlatform()
+    testLogging {
+        events "passed", "failed", "skipped"
+        showStandardStreams = true
+        exceptionFormat "full"
+    }
+}
+EOF
+
+cat > "$JAVADIR/src/main/java/Calculator.java" << 'EOF'
+public class Calculator {
+    public int add(int a, int b) { return a + b; }
+    public double divide(double a, double b) {
+        if (b == 0) throw new ArithmeticException("division by zero");
+        return a / b;
+    }
+}
+EOF
+
+cat > "$JAVADIR/src/test/java/CalculatorTest.java" << 'EOF'
+import org.junit.jupiter.api.Test;
+import static org.junit.jupiter.api.Assertions.*;
+
+class CalculatorTest {
+    Calculator calc = new Calculator();
+
+    @Test void testAdd() { assertEquals(5, calc.add(2, 3)); }
+    @Test void testAddNegative() { assertEquals(0, calc.add(-1, 1)); }
+    @Test void testDivide() { assertEquals(5.0, calc.divide(10, 2)); }
+    @Test void testDivideByZero() { assertThrows(ArithmeticException.class, () -> calc.divide(1, 0)); }
+    @Test void testIntentionalFail() { assertEquals(5, calc.add(2, 2)); }
+}
+EOF
+
+capture "java-gradle" "cd '$JAVADIR' && gradle test --console=rich --no-daemon 2>&1"
+
+# ---------- C# / dotnet ----------
+
+echo "[csharp]"
+CSDIR="$WORK_DIR/csharp"
+dotnet new xunit -o "$CSDIR" --no-restore >/dev/null 2>&1
+
+cat > "$CSDIR/Calculator.cs" << 'EOF'
+public class Calculator
+{
+    public int Add(int a, int b) => a + b;
+    public double Divide(double a, double b)
+    {
+        if (b == 0) throw new DivideByZeroException();
+        return a / b;
+    }
+}
+EOF
+
+cat > "$CSDIR/UnitTest1.cs" << 'EOF'
+namespace csharp;
+
+public class CalculatorTests
+{
+    private readonly Calculator _calc = new();
+
+    [Fact]
+    public void TestAdd() => Assert.Equal(5, _calc.Add(2, 3));
+
+    [Fact]
+    public void TestAddNegative() => Assert.Equal(0, _calc.Add(-1, 1));
+
+    [Fact]
+    public void TestDivide() => Assert.Equal(5.0, _calc.Divide(10, 2));
+
+    [Fact]
+    public void TestDivideByZero() => Assert.Throws<DivideByZeroException>(() => _calc.Divide(1, 0));
+
+    [Fact]
+    public void TestIntentionalFail() => Assert.Equal(5, _calc.Add(2, 2));
+}
+EOF
+
+capture "csharp-dotnet" "cd '$CSDIR' && dotnet test --verbosity normal 2>&1"
+
+# ---------- Ruby / RSpec ----------
+
+echo "[ruby]"
+RBDIR="$WORK_DIR/ruby"
+mkdir -p "$RBDIR/lib" "$RBDIR/spec"
+
+cat > "$RBDIR/lib/calculator.rb" << 'EOF'
+class Calculator
+  def add(a, b)
+    a + b
+  end
+
+  def divide(a, b)
+    raise ArgumentError, "division by zero" if b == 0
+    a.to_f / b
+  end
+
+  def fibonacci(n)
+    return n if n <= 1
+    fibonacci(n - 1) + fibonacci(n - 2)
+  end
+end
+EOF
+
+cat > "$RBDIR/spec/calculator_spec.rb" << 'EOF'
+require_relative '../lib/calculator'
+
+RSpec.describe Calculator do
+  subject(:calc) { described_class.new }
+
+  describe '#add' do
+    it 'adds two numbers' do
+      expect(calc.add(2, 3)).to eq(5)
+    end
+
+    it 'handles negatives' do
+      expect(calc.add(-1, 1)).to eq(0)
+    end
+  end
+
+  describe '#divide' do
+    it 'divides two numbers' do
+      expect(calc.divide(10, 2)).to eq(5.0)
+    end
+
+    it 'raises on zero' do
+      expect { calc.divide(1, 0) }.to raise_error(ArgumentError)
+    end
+  end
+
+  describe '#fibonacci' do
+    it 'computes fib(10)' do
+      expect(calc.fibonacci(10)).to eq(55)
+    end
+
+    it 'fails intentionally' do
+      expect(calc.add(2, 2)).to eq(5)
+    end
+  end
+end
+EOF
+
+gem install rspec --no-document -q >/dev/null 2>&1
+capture "ruby-rspec" "cd '$RBDIR' && rspec spec/ --color --format documentation 2>&1"
+
+# ---------- Lua / Busted ----------
+
+echo "[lua]"
+LUADIR="$WORK_DIR/lua"
+mkdir -p "$LUADIR/spec"
+
+cat > "$LUADIR/calculator.lua" << 'EOF'
+local M = {}
+
+function M.add(a, b)
+    return a + b
+end
+
+function M.divide(a, b)
+    if b == 0 then
+        error("division by zero")
+    end
+    return a / b
+end
+
+function M.fibonacci(n)
+    if n <= 1 then return n end
+    return M.fibonacci(n - 1) + M.fibonacci(n - 2)
+end
+
+return M
+EOF
+
+cat > "$LUADIR/spec/calculator_spec.lua" << 'EOF'
+local calc = require("calculator")
+
+describe("calculator", function()
+    describe("add", function()
+        it("adds two numbers", function()
+            assert.are.equal(5, calc.add(2, 3))
+        end)
+        it("handles negatives", function()
+            assert.are.equal(0, calc.add(-1, 1))
+        end)
+    end)
+
+    describe("divide", function()
+        it("divides two numbers", function()
+            assert.are.equal(5, calc.divide(10, 2))
+        end)
+        it("errors on zero", function()
+            assert.has_error(function() calc.divide(1, 0) end, "division by zero")
+        end)
+    end)
+
+    describe("fibonacci", function()
+        it("computes fib(10)", function()
+            assert.are.equal(55, calc.fibonacci(10))
+        end)
+        it("fails intentionally", function()
+            assert.are.equal(5, calc.add(2, 2))
+        end)
+    end)
+end)
+EOF
+
+if check_cmd busted; then
+    capture "lua-busted" "cd '$LUADIR' && busted -o utfTerminal spec/ 2>&1"
+else
+    echo "  skipping busted (not installed, try: luarocks install busted)"
+fi
+
+# lua interpreter has no color, but capture for reference
+cat > "$LUADIR/bad.lua" << 'EOF'
+local x = nil
+print(x.field)
+EOF
+capture "lua-error" "lua '$LUADIR/bad.lua' 2>&1"
+
+echo ""
+echo "done. samples:"
+ls -1 "$SAMPLES_DIR/"

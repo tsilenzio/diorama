@@ -34,12 +34,18 @@ struct Cli {
     /// List available panels and exit
     #[arg(short, long)]
     list: bool,
+
+    /// Render without color (also honors the NO_COLOR env var)
+    #[arg(long)]
+    no_color: bool,
 }
 
 fn main() -> Result<()> {
     color_eyre::install()?;
 
     let cli = Cli::parse();
+
+    let no_color = cli.no_color || std::env::var_os("NO_COLOR").is_some_and(|v| !v.is_empty());
 
     if cli.list {
         let tools = scaffold::offline_tools();
@@ -69,7 +75,7 @@ fn main() -> Result<()> {
     io::stdout().execute(EnterAlternateScreen)?;
     let mut terminal = Terminal::new(CrosstermBackend::new(io::stdout()))?;
 
-    let mut app = App::new(cli.offline, panel_index)?;
+    let mut app = App::new(cli.offline, no_color, panel_index)?;
 
     loop {
         // Bracket each frame in a synchronized update (DEC mode 2026) so

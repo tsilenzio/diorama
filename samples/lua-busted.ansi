@@ -1,0 +1,10 @@
+[32m●[0m[32m●[0m[32m●[0m[32m●[0m[32m●[0m[31m◼[0m
+[32m5[0m successes / [31m1[0m failure / [35m0[0m errors / [33m0[0m pending : [1m0.001749[0m seconds
+
+[31mFailure[0m → [36mspec/calculator_spec.lua[0m @ [36m26[0m
+[1mcalculator fibonacci fails intentionally[0m
+spec/calculator_spec.lua:27: Expected objects to be equal.
+Passed in:
+(number) 4
+Expected:
+(number) 5
