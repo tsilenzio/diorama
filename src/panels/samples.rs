@@ -8,8 +8,8 @@ use crate::scaffold::DetectedTools;
 
 // Build a panel from captured tool output. The samples are real ANSI dumps
 // produced by scripts/generate-samples and embedded at compile time. The
-// captures are just the command's output, so we prepend the shell prompt and
-// the command line to match the hand-built panels.
+// captures are just the command's output, so we prepend the shell prompt with
+// the command typed after it, then the output.
 fn sample_panel(
     tools: &DetectedTools,
     prompt_lang: &str,
@@ -19,8 +19,7 @@ fn sample_panel(
     color: Color,
     ansi: &[u8],
 ) -> Panel {
-    let mut content = prompt_lines(tools, prompt_lang);
-    content.push(Line::from(vec![s("$ ", WHITE), s(command, BRIGHT_WHITE)]));
+    let mut content = prompt_with_command(tools, prompt_lang, command);
     match ansi.into_text() {
         Ok(text) => content.extend(text.lines),
         Err(_) => content.push(Line::from(s("(failed to parse sample)", RED))),

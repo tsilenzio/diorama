@@ -150,6 +150,21 @@ pub(crate) fn prompt_lines(tools: &DetectedTools, lang: &str) -> Vec<Line<'stati
         .unwrap_or_else(|| vec![Line::from(s("$ ", WHITE))])
 }
 
+// The prompt with the command typed onto its input line, matching how it looks
+// when you actually run the command rather than putting it on a fresh line.
+pub(crate) fn prompt_with_command(
+    tools: &DetectedTools,
+    lang: &str,
+    command: &str,
+) -> Vec<Line<'static>> {
+    let mut lines = prompt_lines(tools, lang);
+    match lines.last_mut() {
+        Some(last) => last.spans.push(s(command, BRIGHT_WHITE)),
+        None => lines.push(Line::from(s(command, BRIGHT_WHITE))),
+    }
+    lines
+}
+
 #[cfg(test)]
 mod tests {
     use super::*;
