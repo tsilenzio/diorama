@@ -153,6 +153,14 @@ fn project_specs() -> Vec<ProjectSpec> {
                 ),
             ],
         },
+        ProjectSpec {
+            name: "Lua",
+            dir_name: "my-lua-app",
+            files: vec![(
+                "main.lua",
+                "local function greet(name)\n    return \"Hello, \" .. name .. \"!\"\nend\n\nprint(greet(\"world\"))\n",
+            )],
+        },
     ]
 }
 

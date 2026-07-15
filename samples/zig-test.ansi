@@ -1,0 +1,18 @@
+[3] Compile Build Script
+[3] Compile Build Script
+[3] Compile Build Script
+[3] Compile Build Script
+[3] Compile Build Script
+[3] Compile Build Script
+[3] Compile Build Script
+[5] Compile Build Script
+[1mbuild.zig:6:10: [31merror: [39mno field named 'root_source_file' in struct 'Build.ExecutableOptions'[0m
+        .root_source_file = b.path("src/main.zig"),
+         [32m^~~~~~~~~~~~~~~~[39m
+[1m/Users/tsilenzio/.local/share/mise/installs/zig/0.15.2/lib/std/Build.zig:771:31: [36mnote: [39mstruct declared here[0m
+pub const ExecutableOptions = struct {
+                              [32m^~~~~~[39m
+[2mreferenced by:[0m
+[2m    runBuild__anon_21152: /Users/tsilenzio/.local/share/mise/installs/zig/0.15.2/lib/std/Build.zig:2214:33[0m
+[2m    main: /Users/tsilenzio/.local/share/mise/installs/zig/0.15.2/lib/compiler/build_runner.zig:366:29[0m
+[2m    4 reference(s) hidden; use '-freference-trace=6' to see all references[0m

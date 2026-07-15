@@ -1,0 +1,42 @@
+-- The CXX compiler identification is AppleClang 17.0.0.17000603
+-- Detecting CXX compiler ABI info
+-- Detecting CXX compiler ABI info - done
+-- Check for working CXX compiler: /usr/bin/c++ - skipped
+-- Detecting CXX compile features
+-- Detecting CXX compile features - done
+-- Configuring done (0.3s)
+-- Generating done (0.0s)
+-- Build files have been written to: /var/folders/t6/w423hg0j67xgrmncvf9n0d180000gn/T/diorama-capture.XXXXXX.7rD0W0gYQe/cpp/build
+[ 50%] Building CXX object CMakeFiles/app.dir/src/main.cpp.o
+[1m/var/folders/t6/w423hg0j67xgrmncvf9n0d180000gn/T/diorama-capture.XXXXXX.7rD0W0gYQe/cpp/src/main.cpp:6:17: [0m[0;1;31merror: [0m[1m
+      no viable conversion from 'int' to 'std::string' (aka 'basic_string<char>')[0m
+    6 |     std::string msg = [0;32m42[0m;  [0;33m// type error[0m
+      | [0;1;32m                ^     ~~
+[0m[1m/Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/c++/v1/string:1032:71: [0m[0;1;36mnote: [0m
+      candidate constructor not viable: no known conversion from 'int' to 'const string &' for 1st argument[0m
+ 1032 |   _LIBCPP_CONSTEXPR_SINCE_CXX20 _LIBCPP_STRING_INTERNAL_MEMORY_ACCESS basic_string([0;34mconst[0m basic_string& __str)[0m
+      | [0;1;32m                                                                      ^            ~~~~~~~~~~~~~~~~~~~~~~~~~
+[0m[1m/Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/c++/v1/string:1052:55: [0m[0;1;36mnote: [0m
+      candidate constructor not viable: no known conversion from 'int' to 'string &&' for 1st argument[0m
+ 1052 |   _LIBCPP_HIDE_FROM_ABI _LIBCPP_CONSTEXPR_SINCE_CXX20 basic_string(basic_string&& __str)[0m
+      | [0;1;32m                                                      ^            ~~~~~~~~~~~~~~~~~~~~
+[0m[1m/Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/c++/v1/string:1092:55: [0m[0;1;36mnote: [0m
+      candidate constructor template not viable: no known conversion from 'int' to 'const char *' for 1st argument[0m
+ 1092 |   _LIBCPP_HIDE_FROM_ABI _LIBCPP_CONSTEXPR_SINCE_CXX20 basic_string([0;34mconst[0m _CharT* __s) {[0m
+      | [0;1;32m                                                      ^            ~~~~~~~~~~~~~~~~~
+[0m[1m/Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/c++/v1/string:1226:55: [0m[0;1;36mnote: [0m
+      candidate constructor not viable: no known conversion from 'int' to 'initializer_list<char>' for 1st argument[0m
+ 1226 |   _LIBCPP_HIDE_FROM_ABI _LIBCPP_CONSTEXPR_SINCE_CXX20 basic_string(initializer_list<_CharT> __il) {[0m
+      | [0;1;32m                                                      ^            ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+[0m[1m/Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/c++/v1/string:1017:64: [0m[0;1;36mnote: [0m
+      explicit constructor is not a candidate[0m
+ 1017 |   _LIBCPP_HIDE_FROM_ABI _LIBCPP_CONSTEXPR_SINCE_CXX20 [0;34mexplicit[0m basic_string([0;34mconst[0m allocator_type& __a)[0m
+      | [0;1;32m                                                               ^
+[0m[1m/Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/c++/v1/string:1184:42: [0m[0;1;36mnote: [0m
+      explicit constructor is not a candidate[0m
+ 1184 |   _LIBCPP_CONSTEXPR_SINCE_CXX20 [0;34mexplicit[0m basic_string([0;34mconst[0m _Tp& __t) {[0m
+      | [0;1;32m                                         ^
+[0m1 error generated.
+make[2]: *** [CMakeFiles/app.dir/src/main.cpp.o] Error 1
+make[1]: *** [CMakeFiles/app.dir/all] Error 2
+make: *** [all] Error 2

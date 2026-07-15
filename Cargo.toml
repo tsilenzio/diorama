@@ -8,7 +8,7 @@ license = "MIT"
 readme = "README.md"
 keywords = ["terminal", "tui", "theme", "ansi", "color-scheme"]
 categories = ["command-line-utilities"]
-exclude = [".github/", "samples/", "scripts/", "demo.tape", "demo.gif"]
+exclude = [".github/", "scripts/", "demo.tape", "demo.gif"]
 
 [dependencies]
 ratatui = "0.29"

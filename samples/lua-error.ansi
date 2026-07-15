@@ -1,0 +1,4 @@
+lua: ...180000gn/T/diorama-capture.XXXXXX.7rD0W0gYQe/lua/bad.lua:2: attempt to index a nil value (local 'x')
+stack traceback:
+	...180000gn/T/diorama-capture.XXXXXX.7rD0W0gYQe/lua/bad.lua:2: in main chunk
+	[C]: in ?

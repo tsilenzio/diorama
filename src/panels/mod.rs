@@ -7,6 +7,7 @@ mod devtools;
 mod git;
 mod interactive;
 mod languages;
+mod samples;
 mod system;
 
 pub(crate) const BLACK: Color = Color::Indexed(0);
@@ -103,8 +104,8 @@ pub struct Panel {
 
 pub fn build_all(tools: &DetectedTools) -> Vec<Panel> {
     vec![
-        languages::python_panel(tools),
         languages::node_panel(tools),
+        languages::python_panel(tools),
         languages::rust_panel(tools),
         languages::go_panel(tools),
         languages::cpp_panel(tools),
@@ -113,6 +114,14 @@ pub fn build_all(tools: &DetectedTools) -> Vec<Panel> {
         languages::csharp_panel(tools),
         languages::ruby_panel(tools),
         languages::lua_panel(tools),
+        samples::node_real_panel(tools),
+        samples::python_real_panel(tools),
+        samples::rust_real_panel(tools),
+        samples::cpp_real_panel(tools),
+        samples::zig_real_panel(tools),
+        samples::java_real_panel(tools),
+        samples::ruby_real_panel(tools),
+        samples::lua_real_panel(tools),
         git::git_log_panel(),
         git::git_diff_panel(),
         system::docker_panel(),
@@ -144,6 +153,21 @@ pub(crate) fn prompt_lines(tools: &DetectedTools, lang: &str) -> Vec<Line<'stati
         .find(|(name, _)| name == lang)
         .map(|(_, text)| text.lines.clone())
         .unwrap_or_else(|| vec![Line::from(s("$ ", WHITE))])
+}
+
+// The prompt with the command typed onto its input line, matching how it looks
+// when you actually run the command rather than putting it on a fresh line.
+pub(crate) fn prompt_with_command(
+    tools: &DetectedTools,
+    lang: &str,
+    command: &str,
+) -> Vec<Line<'static>> {
+    let mut lines = prompt_lines(tools, lang);
+    match lines.last_mut() {
+        Some(last) => last.spans.push(s(command, BRIGHT_WHITE)),
+        None => lines.push(Line::from(s(command, BRIGHT_WHITE))),
+    }
+    lines
 }
 
 #[cfg(test)]
@@ -194,6 +218,6 @@ mod tests {
     #[test]
     fn panel_count() {
         let panels = test_panels();
-        assert_eq!(panels.len(), 24);
+        assert_eq!(panels.len(), 32);
     }
 }
