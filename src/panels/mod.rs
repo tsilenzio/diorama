@@ -114,7 +114,12 @@ pub fn build_all(tools: &DetectedTools) -> Vec<Panel> {
         languages::csharp_panel(tools),
         languages::ruby_panel(tools),
         languages::lua_panel(tools),
+        samples::node_real_panel(tools),
+        samples::python_real_panel(tools),
+        samples::rust_real_panel(tools),
         samples::cpp_real_panel(tools),
+        samples::zig_real_panel(tools),
+        samples::java_real_panel(tools),
         samples::ruby_real_panel(tools),
         samples::lua_real_panel(tools),
         git::git_log_panel(),
@@ -213,6 +218,6 @@ mod tests {
     #[test]
     fn panel_count() {
         let panels = test_panels();
-        assert_eq!(panels.len(), 27);
+        assert_eq!(panels.len(), 32);
     }
 }

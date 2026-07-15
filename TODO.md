@@ -16,11 +16,15 @@
 - [x] GitHub Releases with prebuilt binaries (macOS + Linux, arm64/x86_64)
 - [x] Synchronized-output rendering (no resize flicker)
 - [x] NO_COLOR support (`--no-color` and the `NO_COLOR` env var)
-- [x] Wire clean captured samples into panels (C/C++, Ruby, Lua)
+- [x] Wire captured samples into real panels (8 languages; animated captures
+      flattened through tmux so pytest/vitest/etc. render as final frames)
 
 ## Short Term
 - [ ] Word wrap in fullscreen (per-panel: wrap prose panels, truncate tables/art)
-- [ ] Flatten animated captures (pytest, vitest, cargo, etc.) so they can be wired in
+- [ ] Reproducible sample flattening: run the tmux flatten inside generate-samples
+- [ ] Wire C# and Go captures (C# dotnet output is very long; Go has no color)
+- [ ] Sanitize capture paths (temp dirs, usernames) or decide to keep them real
+- [ ] Decide whether real panels replace the hand-built ones
 - [ ] Detect and use real CLI tools (eza, bat, jq) when available
 
 ## Medium Term

@@ -1,32 +1,34 @@
-[1m================================================= test session starts ==================================================[0m
-platform darwin -- Python 3.14.3, pytest-9.0.2, pluggy-1.6.0 -- /Users/tsilenzio/.local/share/mise/installs/python/3.14.3/bin/python3
+[1m================================================= test session starts ==================================================
+[0mplatform darwin -- Python 3.14.3, pytest-9.0.2, pluggy-1.6.0 -- /Users/tsilenzio/.local/share/mise/installs/python/3.14.
+3/bin/python3
 cachedir: .pytest_cache
 rootdir: /private/var/folders/t6/w423hg0j67xgrmncvf9n0d180000gn/T/diorama-capture.XXXXXX.7rD0W0gYQe/python
 plugins: cov-7.0.0
-[1mcollecting ... [0m[1mcollected 7 items                                                                                                      [0m
+[1mcollected 7 items                                                                                                      [0m
 
-tests/test_auth.py::TestLogin::test_valid_credentials [32mPASSED[0m[32m                                                     [ 14%][0m
-tests/test_auth.py::TestLogin::test_invalid_password [32mPASSED[0m[32m                                                      [ 28%][0m
-tests/test_auth.py::TestLogin::test_unknown_user [32mPASSED[0m[32m                                                          [ 42%][0m
-tests/test_auth.py::TestVerify::test_valid_token [32mPASSED[0m[32m                                                          [ 57%][0m
-tests/test_auth.py::TestVerify::test_invalid_token [32mPASSED[0m[32m                                                        [ 71%][0m
-tests/test_auth.py::TestSerialization::test_to_dict [31mFAILED[0m[31m                                                       [ 85%][0m
-tests/test_auth.py::TestSerialization::test_user_count [32mPASSED[0m[31m                                                    [100%][0m
+tests/test_auth.py::TestLogin::test_valid_credentials [32mPASSED                                                     [ 14%][39m
+tests/test_auth.py::TestLogin::test_invalid_password [32mPASSED                                                      [ 28%][39m
+tests/test_auth.py::TestLogin::test_unknown_user [32mPASSED                                                          [ 42%][39m
+tests/test_auth.py::TestVerify::test_valid_token [32mPASSED                                                          [ 57%][39m
+tests/test_auth.py::TestVerify::test_invalid_token [32mPASSED                                                        [ 71%][39m
+tests/test_auth.py::TestSerialization::test_to_dict [31mFAILED                                                       [ 85%][39m
+tests/test_auth.py::TestSerialization::test_user_count [32mPASSED[31m                                                    [100%][39m
 
 ======================================================= FAILURES =======================================================
-[31m[1m____________________________________________ TestSerialization.test_to_dict ____________________________________________[0m
-[1m[31mtests/test_auth.py[0m:36: in test_to_dict
-    [0m[94massert[39;49;00m svc.to_dict() == {[33m"[39;49;00m[33musers[39;49;00m[33m"[39;49;00m: [[33m"[39;49;00m[33malice[39;49;00m[33m"[39;49;00m, [33m"[39;49;00m[33mcharlie[39;49;00m[33m"[39;49;00m]}[90m[39;49;00m
+[1m[31m____________________________________________ TestSerialization.test_to_dict ____________________________________________
+tests/test_auth.py[0m:36: in test_to_dict
+    [94massert[39m svc.to_dict() == {[33m"users"[39m: [[33m"alice"[39m, [33m"charlie"[39m]}
 [1m[31mE   AssertionError: assert {'users': ['alice', 'bob']} == {'users': ['a...', 'charlie']}[0m
 [1m[31mE     [0m
 [1m[31mE     Differing items:[0m
-[1m[31mE     [0m{[33m'[39;49;00m[33musers[39;49;00m[33m'[39;49;00m: [[33m'[39;49;00m[33malice[39;49;00m[33m'[39;49;00m, [33m'[39;49;00m[33mbob[39;49;00m[33m'[39;49;00m]}[90m[39;49;00m != [0m{[33m'[39;49;00m[33musers[39;49;00m[33m'[39;49;00m: [[33m'[39;49;00m[33malice[39;49;00m[33m'[39;49;00m, [33m'[39;49;00m[33mcharlie[39;49;00m[33m'[39;49;00m]}[90m[39;49;00m[0m
+[1m[31mE     [0m{[33m'users'[39m: [[33m'alice'[39m, [33m'bob'[39m]} != {[33m'users'[39m: [[33m'alice'[39m, [33m'charlie'[39m]}
 [1m[31mE     [0m
 [1m[31mE     Full diff:[0m
-[1m[31mE     [0m[90m [39;49;00m {[90m[39;49;00m[0m
-[1m[31mE     [90m [39;49;00m     'users': [[90m[39;49;00m...[0m
+[1m[31mE     [0m[90m [39m {
+[1m[31mE     [90m [0m     'users': [...
 [1m[31mE     [0m
 [1m[31mE     ...Full output truncated (5 lines hidden), use '-vv' to show[0m
-[36m[1m=============================================== short test summary info ================================================[0m
-[31mFAILED[0m tests/test_auth.py::[1mTestSerialization::test_to_dict[0m - AssertionError: assert {'users': ['alice', 'bob']} == {'users': ['a...', 'charlie']}
-[31m============================================= [31m[1m1 failed[0m, [32m6 passed[0m[31m in 0.03s[0m[31m ==============================================[0m
+[1m[36m=============================================== short test summary info ================================================
+[0m[31mFAILED[39m tests/test_auth.py::[1mTestSerialization::test_to_dict[0m - AssertionError: assert {'users': ['alice', 'bob']} == {'use
+rs': ['a...', 'charlie']}
+[31m============================================= [1m1 failed[0m, [32m6 passed[31m in 0.03s ==============================================

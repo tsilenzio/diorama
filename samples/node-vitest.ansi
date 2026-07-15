@@ -1,35 +1,21 @@
-[?25l
-[1m[46m RUN [49m[22m [36mv4.0.18 [39m[90m/private/var/folders/t6/w423hg0j67xgrmncvf9n0d180000gn/T/diorama-capture.XXXXXX.7rD0W0gYQe/node[39m
 
-[?2026h
-[1m[33m ❯ [39m[22msrc/math.test.ts[2m [queued][22m
+[1m[46m RUN [0m [36mv4.0.18 [90m/private/var/folders/t6/w423hg0j67xgrmncvf9n0d180000gn/T/diorama-capture.XXXXXX.7rD0W0gYQe/node[39m
 
-[2m Test Files [22m[1m[32m0 passed[39m[22m[90m (1)[39m
-[2m      Tests [22m[1m[32m0 passed[39m[22m[90m (0)[39m
-[2m   Start at [22m10:25:41
-[2m   Duration [22m0ms
-[?2026l[?2026h[K[1A[K[1A[K[1A[K[1A[K[1A[K[1A[K[1A[K
-[1m[33m ❯ [39m[22msrc/math.test.ts[2m 0/6[22m
+ [31m❯[39m src/math.test.ts [2m(6 tests | [0m[31m1 failed[2m[39m)[0m[32m 5[2mms[0m
+   [32m✓[39m add [2m(2)[0m
+     [32m✓[39m adds two positive numbers[32m 1[2mms[0m
+     [32m✓[39m adds negative numbers[32m 0[2mms[0m
+   [32m✓[39m divide [2m(2)[0m
+     [32m✓[39m divides two numbers[32m 0[2mms
+[0m     [32m✓[39m throws on zero[32m 0[2mms[0m
+   [31m❯[39m fibonacci [2m(2)[0m
+     [32m✓[39m computes fib(10)[32m 0[2mms[0m
+[31m     × intentional failure[32m 3[2mms
 
-[2m Test Files [22m[1m[32m0 passed[39m[22m[90m (1)[39m
-[2m      Tests [22m[1m[32m0 passed[39m[22m[90m (6)[39m
-[2m   Start at [22m10:25:41
-[2m   Duration [22m302ms
-[?2026l[K[1A[K[1A[K[1A[K[1A[K[1A[K[1A[K[1A[K [31m❯[39m src/math.test.ts [2m([22m[2m6 tests[22m[2m | [22m[31m1 failed[39m[2m)[22m[32m 5[2mms[22m[39m
-   [32m✓[39m add [2m(2)[22m
-     [32m✓[39m adds two positive numbers[32m 1[2mms[22m[39m
-     [32m✓[39m adds negative numbers[32m 0[2mms[22m[39m
-   [32m✓[39m divide [2m(2)[22m
-     [32m✓[39m divides two numbers[32m 0[2mms[22m[39m
-     [32m✓[39m throws on zero[32m 0[2mms[22m[39m
-   [31m❯[39m fibonacci [2m(2)[22m
-     [32m✓[39m computes fib(10)[32m 0[2mms[22m[39m
-[31m     [31m×[31m intentional failure[39m[32m 3[2mms[22m[39m
+[0m[31m⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1m[39m[41m Failed Tests 1 [0m[31m⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯
 
-[31m⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[39m[1m[41m Failed Tests 1 [49m[22m[31m⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[39m
-
-[41m[1m FAIL [22m[49m src/math.test.ts[2m > [22mfibonacci[2m > [22mintentional failure
-[31m[1mAssertionError[22m: expected 4 to be 5 // Object.is equality[39m
+[1m[39m[41m FAIL [0m src/math.test.ts[2m > [0mfibonacci[2m > [0mintentional failure
+[1m[31mAssertionError[0m[31m: expected 4 to be 5 // Object.is equality[39m
 
 [32m- Expected[39m
 [31m+ Received[39m
@@ -37,20 +23,18 @@
 [32m- 5[39m
 [31m+ 4[39m
 
-[36m [2m❯[22m src/math.test.ts:[2m27:23[22m[39m
+[36m [2m❯[0m[36m src/math.test.ts:[2m27:23[0m
     [90m 25| [39m  })[33m;[39m
-    [90m 26| [39m  [34mit[39m([32m'intentional failure'[39m[33m,[39m () [33m=>[39m {
-    [90m 27| [39m    [34mexpect[39m([34madd[39m([34m2[39m[33m,[39m [34m2[39m))[33m.[39m[34mtoBe[39m([34m5[39m)[33m;[39m
+    [90m 26| [39m  [34mit[39m([32m'intentional failure'[33m,[39m () [33m=>[39m {
+    [90m 27| [39m    [34mexpect[39m([34madd[39m([34m2[33m,[39m [34m2[39m))[33m.[34mtoBe[39m([34m5[39m)[33m;[39m
     [90m   | [39m                      [31m^[39m
     [90m 28| [39m  })[33m;[39m
     [90m 29| [39m})[33m;[39m
 
-[31m[2m⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/1]⎯[22m[39m
+[2m[31m⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/1]⎯
 
 
-[2m Test Files [22m [1m[31m1 failed[39m[22m[90m (1)[39m
-[2m      Tests [22m [1m[31m1 failed[39m[22m[2m | [22m[1m[32m5 passed[39m[22m[90m (6)[39m
-[2m   Start at [22m 10:25:41
-[2m   Duration [22m 359ms[2m (transform 272ms, setup 0ms, import 279ms, tests 5ms, environment 0ms)[22m
-
-[?25h⠙[1G[0K
+[39m Test Files [0m [1m[31m1 failed[0m[90m (1)[39m
+[2m      Tests [0m [1m[31m1 failed[0;2m | [0;1m[32m5 passed[0m[90m (6)[39m
+[2m   Start at [0m 10:25:41
+[2m   Duration [0m 359ms[2m (transform 272ms, setup 0ms, import 279ms, tests 5ms, environment 0ms)[0m

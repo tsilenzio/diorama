@@ -32,6 +32,66 @@ fn sample_panel(
     }
 }
 
+pub(super) fn python_real_panel(tools: &DetectedTools) -> Panel {
+    sample_panel(
+        tools,
+        "Python",
+        "pytest --cov=src -v --tb=short tests/",
+        "Python (real)",
+        '\u{e73c}',
+        YELLOW,
+        include_bytes!("../../samples/python-pytest.ansi"),
+    )
+}
+
+pub(super) fn node_real_panel(tools: &DetectedTools) -> Panel {
+    sample_panel(
+        tools,
+        "Node.js",
+        "npx vitest run",
+        "Node.js (real)",
+        '\u{e718}',
+        GREEN,
+        include_bytes!("../../samples/node-vitest.ansi"),
+    )
+}
+
+pub(super) fn rust_real_panel(tools: &DetectedTools) -> Panel {
+    sample_panel(
+        tools,
+        "Rust",
+        "cargo test",
+        "Rust (real)",
+        '\u{e7a8}',
+        RED,
+        include_bytes!("../../samples/rust-cargo-test.ansi"),
+    )
+}
+
+pub(super) fn java_real_panel(tools: &DetectedTools) -> Panel {
+    sample_panel(
+        tools,
+        "Java",
+        "gradle test",
+        "Java (real)",
+        '\u{e738}',
+        RED,
+        include_bytes!("../../samples/java-gradle.ansi"),
+    )
+}
+
+pub(super) fn zig_real_panel(tools: &DetectedTools) -> Panel {
+    sample_panel(
+        tools,
+        "Zig",
+        "zig build test",
+        "Zig (real)",
+        '\u{e6a9}',
+        YELLOW,
+        include_bytes!("../../samples/zig-test.ansi"),
+    )
+}
+
 pub(super) fn cpp_real_panel(tools: &DetectedTools) -> Panel {
     sample_panel(
         tools,
