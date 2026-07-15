@@ -250,13 +250,22 @@ fn draw_fullscreen(f: &mut Frame, app: &App) {
     } else {
         String::new()
     };
+    let width = total.to_string().len();
     let status = format!(
-        " {}/{}{} │ ←→/hl: prev/next │ ↑↓/jk: scroll │ Home/End: top/bottom │ Tab/Esc: grid │ q: quit ",
+        " {:>width$}/{}{} │ ←→/hl: prev/next │ ↑↓/jk: scroll │ Home/End: top/bottom │ Tab/Esc: grid │ q: quit ",
         current, total, scroll_indicator
+    );
+    // Pad panel label to the widest title so the status bar doesn't shift
+    let max_title = app.panels.iter().map(|p| p.title.len()).max().unwrap_or(0);
+    let label = format!(
+        " {} {:<width$} ",
+        panel.icon,
+        panel.title,
+        width = max_title
     );
     let status_line = Line::from(vec![
         Span::styled(
-            format!(" {} {} ", panel.icon, panel.title),
+            label,
             Style::default()
                 .fg(BRIGHT_WHITE)
                 .add_modifier(Modifier::BOLD),
